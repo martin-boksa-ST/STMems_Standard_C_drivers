@@ -104,6 +104,8 @@
 static uint8_t whoamI;
 static uint8_t tx_buffer[1000];
 
+static lsm6dsv16x_interrupt_mode_t irq;
+
 /* Extern variables ----------------------------------------------------------*/
 
 /* Private functions ---------------------------------------------------------*/
@@ -140,7 +142,6 @@ void lsm6dsv16x_free_fall_handler(void)
 void lsm6dsv16x_free_fall(void)
 {
   lsm6dsv16x_pin_int_route_t pin_int;
-  lsm6dsv16x_interrupt_mode_t irq;
   lsm6dsv16x_reset_t rst;
 
   /* Initialize mems driver interface */
@@ -177,10 +178,7 @@ void lsm6dsv16x_free_fall(void)
   lsm6dsv16x_ff_time_windows_set(&dev_ctx, 0);
   lsm6dsv16x_ff_thresholds_set(&dev_ctx, LSM6DSV16X_312_mg);
 
-  /* Set Output Data Rate.
-   * Selected data rate have to be equal or greater with respect
-   * with MLC data rate.
-   */
+  /* Set Output Data Rate.*/
   lsm6dsv16x_xl_data_rate_set(&dev_ctx, LSM6DSV16X_XL_ODR_AT_120Hz);
   /* Set full scale */
   lsm6dsv16x_xl_full_scale_set(&dev_ctx, LSM6DSV16X_2g);
