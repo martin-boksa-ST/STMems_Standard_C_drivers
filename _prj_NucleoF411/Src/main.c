@@ -65,6 +65,10 @@ void lsm6dsv16x_fifo(void);
 void lsm6dsv16x_fifo_irq(void);
 void lsm6dsv16x_sensor_fusion(void);
 void lsm6dsv16x_qvar_read_data_polling(void);
+void lsm6dsv16x_free_fall(void);
+void lsm6dsv16x_wakeup(void);
+void lsm6dsv16x_sixd(void);
+void lsm6dsv16x_single_double_tap(void);
 
 void lsm6dsv16bx_read_data_polling(void);
 void lsm6dsv16bx_activity(void);
@@ -82,12 +86,19 @@ void lsm6dsv32x_sensor_fusion(void);
 
 void lsm6dsv16x_read_data_irq_handler(void);
 void lsm6dsv16x_fifo_irq_handler(void);
+void lsm6dsv16x_free_fall_handler(void);
+void lsm6dsv16x_wakeup_handler(void);
+void lsm6dsv16x_sixd_handler(void);
+void lsm6dsv16x_single_double_tap_handler(void);
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   //lsm6dsv16x_read_data_irq_handler();
-  lsm6dsv16x_fifo_irq_handler();
-
+  //lsm6dsv16x_fifo_irq_handler();
+  //lsm6dsv16x_free_fall_handler();
+  //lsm6dsv16x_wakeup_handler();
+  //lsm6dsv16x_sixd_handler();
+  lsm6dsv16x_single_double_tap_handler();
 }
 
 /* USER CODE END 0 */
@@ -139,8 +150,12 @@ int main(void)
     //lsm6dsv16x_compressed_fifo();
     //lsm6dsv16x_sensor_fusion();
     //lsm6dsv16x_fifo();
-    lsm6dsv16x_fifo_irq();
+    //lsm6dsv16x_fifo_irq();
     //lsm6dsv16x_qvar_read_data_polling();
+    //lsm6dsv16x_free_fall();
+    //lsm6dsv16x_wakeup();
+    //lsm6dsv16x_sixd();
+    lsm6dsv16x_single_double_tap();
 
     //lsm6dsv16bx_read_data_polling();
     //lsm6dsv16bx_activity();
