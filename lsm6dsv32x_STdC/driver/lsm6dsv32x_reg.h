@@ -3992,6 +3992,16 @@ int32_t lsm6dsv32x_data_ready_mode_set(stmdev_ctx_t *ctx,
 int32_t lsm6dsv32x_data_ready_mode_get(stmdev_ctx_t *ctx,
                                        lsm6dsv32x_data_ready_mode_t *val);
 
+typedef struct
+{
+  uint8_t enable                         : 1; /* interrupt enable */
+  uint8_t lir                            : 1; /* interrupt pulsed or latched */
+} lsm6dsv32x_interrupt_mode_t;
+int32_t lsm6dsv32x_interrupt_enable_set(stmdev_ctx_t *ctx,
+                                        lsm6dsv32x_interrupt_mode_t val);
+int32_t lsm6dsv32x_interrupt_enable_get(stmdev_ctx_t *ctx,
+                                        lsm6dsv32x_interrupt_mode_t *val);
+
 typedef enum
 {
   LSM6DSV32X_125dps = 0x0,
@@ -4144,6 +4154,15 @@ typedef struct
   uint8_t fifo_full  : 1;
   uint8_t cnt_bdr  : 1;
   uint8_t emb_func_endop  : 1;
+  uint8_t timestamp                      : 1;
+  uint8_t shub                           : 1;
+  uint8_t emb_func                       : 1;
+  uint8_t sixd                           : 1;
+  uint8_t single_tap                     : 1;
+  uint8_t double_tap                     : 1;
+  uint8_t wakeup                         : 1;
+  uint8_t freefall                       : 1;
+  uint8_t sleep_change                   : 1;
 } lsm6dsv32x_pin_int_route_t;
 int32_t lsm6dsv32x_pin_int1_route_set(stmdev_ctx_t *ctx,
                                       lsm6dsv32x_pin_int_route_t *val);
@@ -5135,9 +5154,9 @@ int32_t lsm6dsv32x_tap_detection_get(stmdev_ctx_t *ctx,
 
 typedef struct
 {
-  uint8_t x  : 1;
-  uint8_t y  : 1;
-  uint8_t z  : 1;
+  uint8_t x                              : 5;
+  uint8_t y                              : 5;
+  uint8_t z                              : 5;
 } lsm6dsv32x_tap_thresholds_t;
 int32_t lsm6dsv32x_tap_thresholds_set(stmdev_ctx_t *ctx,
                                       lsm6dsv32x_tap_thresholds_t val);
@@ -5160,9 +5179,9 @@ int32_t lsm6dsv32x_tap_axis_priority_get(stmdev_ctx_t *ctx,
 
 typedef struct
 {
-  uint8_t shock : 1;
-  uint8_t quiet : 1;
-  uint8_t tap_gap : 1;
+  uint8_t shock                          : 2;
+  uint8_t quiet                          : 2;
+  uint8_t tap_gap                        : 4;
 } lsm6dsv32x_tap_time_windows_t;
 int32_t lsm6dsv32x_tap_time_windows_set(stmdev_ctx_t *ctx,
                                         lsm6dsv32x_tap_time_windows_t val);
@@ -5221,11 +5240,13 @@ int32_t lsm6dsv32x_act_sleep_xl_odr_get(stmdev_ctx_t *ctx,
 
 typedef struct
 {
-  uint32_t wk_ths_mg;
-  uint32_t inact_ths_mg;
+  lsm6dsv32x_inactivity_dur_t inactivity_cfg;
+  uint8_t inactivity_ths;
+  uint8_t threshold;
+  uint8_t duration;
 } lsm6dsv32x_act_thresholds_t;
 int32_t lsm6dsv32x_act_thresholds_set(stmdev_ctx_t *ctx,
-                                      lsm6dsv32x_act_thresholds_t val);
+                                      lsm6dsv32x_act_thresholds_t *val);
 int32_t lsm6dsv32x_act_thresholds_get(stmdev_ctx_t *ctx,
                                       lsm6dsv32x_act_thresholds_t *val);
 

@@ -1005,6 +1005,64 @@ int32_t lsm6dsv32x_data_ready_mode_get(stmdev_ctx_t *ctx,
 }
 
 /**
+  * @brief  Enables interrupt.[set]
+  *
+  * @param  ctx      read / write interface definitions
+  * @param  val      enable/disable, latched/pulsed
+  * @retval          interface status (MANDATORY: return 0 -> no Error)
+  *
+  */
+int32_t lsm6dsv32x_interrupt_enable_set(stmdev_ctx_t *ctx,
+                                        lsm6dsv32x_interrupt_mode_t val)
+{
+  lsm6dsv32x_tap_cfg0_t cfg;
+  lsm6dsv32x_functions_enable_t func;
+  int32_t ret;
+
+  ret = lsm6dsv32x_read_reg(ctx, LSM6DSV32X_FUNCTIONS_ENABLE, (uint8_t *)&func, 1);
+
+  if (ret == 0)
+  {
+    func.interrupts_enable = val.enable;
+    ret = lsm6dsv32x_write_reg(ctx, LSM6DSV32X_FUNCTIONS_ENABLE, (uint8_t *)&func, 1);
+  }
+
+  ret += lsm6dsv32x_read_reg(ctx, LSM6DSV32X_TAP_CFG0, (uint8_t *)&cfg, 1);
+
+  if (ret == 0)
+  {
+    cfg.lir = val.lir;
+    ret = lsm6dsv32x_write_reg(ctx, LSM6DSV32X_TAP_CFG0, (uint8_t *)&cfg, 1);
+  }
+
+  return ret;
+}
+
+/**
+  * @brief  Enables latched interrupt mode.[get]
+  *
+  * @param  ctx      read / write interface definitions
+  * @param  val      enable/disable, latched/pulsed
+  * @retval          interface status (MANDATORY: return 0 -> no Error)
+  *
+  */
+int32_t lsm6dsv32x_interrupt_enable_get(stmdev_ctx_t *ctx,
+                                        lsm6dsv32x_interrupt_mode_t *val)
+{
+  lsm6dsv32x_tap_cfg0_t cfg;
+  lsm6dsv32x_functions_enable_t func;
+  int32_t ret;
+
+  ret = lsm6dsv32x_read_reg(ctx, LSM6DSV32X_FUNCTIONS_ENABLE, (uint8_t *)&func, 1);
+  ret += lsm6dsv32x_read_reg(ctx, LSM6DSV32X_TAP_CFG0, (uint8_t *)&cfg, 1);
+
+  val->enable = func.interrupts_enable;
+  val->lir = cfg.lir;
+
+  return ret;
+}
+
+/**
   * @brief  Gyroscope full-scale selection[set]
   *
   * @param  ctx      read / write interface definitions
@@ -1456,6 +1514,7 @@ int32_t lsm6dsv32x_pin_int1_route_set(stmdev_ctx_t *ctx,
                                       lsm6dsv32x_pin_int_route_t *val)
 {
   lsm6dsv32x_int1_ctrl_t          int1_ctrl;
+  lsm6dsv32x_md1_cfg_t            md1_cfg;
   int32_t ret;
 
   ret = lsm6dsv32x_read_reg(ctx, LSM6DSV32X_INT1_CTRL, (uint8_t *)&int1_ctrl, 1);
@@ -1469,6 +1528,19 @@ int32_t lsm6dsv32x_pin_int1_route_set(stmdev_ctx_t *ctx,
 
   ret += lsm6dsv32x_write_reg(ctx, LSM6DSV32X_INT1_CTRL, (uint8_t *)&int1_ctrl,
                               1);
+
+  ret += lsm6dsv32x_read_reg(ctx, LSM6DSV32X_MD1_CFG, (uint8_t *)&md1_cfg, 1);
+
+  md1_cfg.int1_shub            = val->shub;
+  md1_cfg.int1_emb_func        = val->emb_func;
+  md1_cfg.int1_6d              = val->sixd;
+  md1_cfg.int1_single_tap      = val->single_tap;
+  md1_cfg.int1_double_tap      = val->double_tap;
+  md1_cfg.int1_wu              = val->wakeup;
+  md1_cfg.int1_ff              = val->freefall;
+  md1_cfg.int1_sleep_change    = val->sleep_change;
+
+  ret += lsm6dsv32x_write_reg(ctx, LSM6DSV32X_MD1_CFG, (uint8_t *)&md1_cfg, 1);
 
   return ret;
 }
@@ -1485,6 +1557,7 @@ int32_t lsm6dsv32x_pin_int1_route_get(stmdev_ctx_t *ctx,
                                       lsm6dsv32x_pin_int_route_t *val)
 {
   lsm6dsv32x_int1_ctrl_t          int1_ctrl;
+  lsm6dsv32x_md1_cfg_t            md1_cfg;
   int32_t ret;
 
   ret = lsm6dsv32x_read_reg(ctx, LSM6DSV32X_INT1_CTRL, (uint8_t *)&int1_ctrl, 1);
@@ -1495,6 +1568,17 @@ int32_t lsm6dsv32x_pin_int1_route_get(stmdev_ctx_t *ctx,
   val->fifo_ovr  = int1_ctrl.int1_fifo_ovr;
   val->fifo_full = int1_ctrl.int1_fifo_full;
   val->cnt_bdr   = int1_ctrl.int1_cnt_bdr;
+
+  ret += lsm6dsv32x_read_reg(ctx, LSM6DSV32X_MD1_CFG, (uint8_t *)&md1_cfg, 1);
+
+  val->shub         = md1_cfg.int1_shub;
+  val->emb_func     = md1_cfg.int1_emb_func;
+  val->sixd         = md1_cfg.int1_6d;
+  val->single_tap   = md1_cfg.int1_single_tap;
+  val->double_tap   = md1_cfg.int1_double_tap;
+  val->wakeup       = md1_cfg.int1_wu;
+  val->freefall     = md1_cfg.int1_ff;
+  val->sleep_change = md1_cfg.int1_sleep_change;
 
   return ret;
 }
@@ -1511,6 +1595,7 @@ int32_t lsm6dsv32x_pin_int2_route_set(stmdev_ctx_t *ctx,
                                       lsm6dsv32x_pin_int_route_t *val)
 {
   lsm6dsv32x_int2_ctrl_t          int2_ctrl;
+  lsm6dsv32x_md2_cfg_t            md2_cfg;
   int32_t ret;
 
   ret = lsm6dsv32x_read_reg(ctx, LSM6DSV32X_INT2_CTRL, (uint8_t *)&int2_ctrl, 1);
@@ -1527,6 +1612,19 @@ int32_t lsm6dsv32x_pin_int2_route_set(stmdev_ctx_t *ctx,
   ret += lsm6dsv32x_write_reg(ctx, LSM6DSV32X_INT2_CTRL, (uint8_t *)&int2_ctrl,
                               1);
 
+  ret += lsm6dsv32x_read_reg(ctx, LSM6DSV32X_MD2_CFG, (uint8_t *)&md2_cfg, 1);
+
+  md2_cfg.int2_timestamp       = val->timestamp;
+  md2_cfg.int2_emb_func        = val->emb_func;
+  md2_cfg.int2_6d              = val->sixd;
+  md2_cfg.int2_single_tap      = val->single_tap;
+  md2_cfg.int2_double_tap      = val->double_tap;
+  md2_cfg.int2_wu              = val->wakeup;
+  md2_cfg.int2_ff              = val->freefall;
+  md2_cfg.int2_sleep_change    = val->sleep_change;
+
+  ret += lsm6dsv32x_write_reg(ctx, LSM6DSV32X_MD2_CFG, (uint8_t *)&md2_cfg, 1);
+
   return ret;
 }
 
@@ -1542,6 +1640,7 @@ int32_t lsm6dsv32x_pin_int2_route_get(stmdev_ctx_t *ctx,
                                       lsm6dsv32x_pin_int_route_t *val)
 {
   lsm6dsv32x_int2_ctrl_t          int2_ctrl;
+  lsm6dsv32x_md2_cfg_t            md2_cfg;
   int32_t ret;
 
   ret = lsm6dsv32x_read_reg(ctx, LSM6DSV32X_INT2_CTRL, (uint8_t *)&int2_ctrl, 1);
@@ -1554,6 +1653,17 @@ int32_t lsm6dsv32x_pin_int2_route_get(stmdev_ctx_t *ctx,
   val->cnt_bdr        = int2_ctrl.int2_cnt_bdr;
   val->drdy_g_eis     = int2_ctrl.int2_drdy_g_eis;
   val->emb_func_endop = int2_ctrl.int2_emb_func_endop;
+
+  ret += lsm6dsv32x_read_reg(ctx, LSM6DSV32X_MD2_CFG, (uint8_t *)&md2_cfg, 1);
+
+  val->timestamp      = md2_cfg.int2_timestamp;
+  val->emb_func       = md2_cfg.int2_emb_func;
+  val->sixd           = md2_cfg.int2_6d;
+  val->single_tap     = md2_cfg.int2_single_tap;
+  val->double_tap     = md2_cfg.int2_double_tap;
+  val->wakeup         = md2_cfg.int2_wu;
+  val->freefall       = md2_cfg.int2_ff;
+  val->sleep_change   = md2_cfg.int2_sleep_change;
 
   return ret;
 }
@@ -9120,9 +9230,9 @@ int32_t lsm6dsv32x_tap_detection_set(stmdev_ctx_t *ctx,
   ret = lsm6dsv32x_read_reg(ctx, LSM6DSV32X_TAP_CFG0, (uint8_t *)&tap_cfg0, 1);
   if (ret == 0)
   {
-    tap_cfg0.tap_z_en = val.tap_x_en;
+    tap_cfg0.tap_x_en = val.tap_x_en;
     tap_cfg0.tap_y_en = val.tap_y_en;
-    tap_cfg0.tap_x_en = val.tap_z_en;
+    tap_cfg0.tap_z_en = val.tap_z_en;
     ret = lsm6dsv32x_write_reg(ctx, LSM6DSV32X_TAP_CFG0, (uint8_t *)&tap_cfg0, 1);
   }
 
@@ -9144,7 +9254,7 @@ int32_t lsm6dsv32x_tap_detection_get(stmdev_ctx_t *ctx,
   int32_t ret;
 
   ret = lsm6dsv32x_read_reg(ctx, LSM6DSV32X_TAP_CFG0, (uint8_t *)&tap_cfg0, 1);
-  val->tap_x_en = tap_cfg0.tap_z_en;
+  val->tap_x_en = tap_cfg0.tap_x_en;
   val->tap_y_en = tap_cfg0.tap_y_en;
   val->tap_z_en = tap_cfg0.tap_z_en;
 
@@ -9765,112 +9875,33 @@ int32_t lsm6dsv32x_act_sleep_xl_odr_get(stmdev_ctx_t *ctx,
   *
   */
 int32_t lsm6dsv32x_act_thresholds_set(stmdev_ctx_t *ctx,
-                                      lsm6dsv32x_act_thresholds_t val)
+                                      lsm6dsv32x_act_thresholds_t *val)
 {
   lsm6dsv32x_inactivity_ths_t inactivity_ths;
   lsm6dsv32x_inactivity_dur_t inactivity_dur;
   lsm6dsv32x_wake_up_ths_t wake_up_ths;
+  lsm6dsv32x_wake_up_dur_t wake_up_dur;
   int32_t ret;
-  float_t tmp;
+
+
 
   ret = lsm6dsv32x_read_reg(ctx, LSM6DSV32X_INACTIVITY_DUR, (uint8_t *)&inactivity_dur, 1);
-  if (ret == 0)
-  {
-    ret = lsm6dsv32x_read_reg(ctx, LSM6DSV32X_INACTIVITY_THS, (uint8_t *)&inactivity_ths, 1);
-  }
+  ret += lsm6dsv32x_read_reg(ctx, LSM6DSV32X_INACTIVITY_THS, (uint8_t *)&inactivity_ths, 1);
+  ret += lsm6dsv32x_read_reg(ctx, LSM6DSV32X_WAKE_UP_THS, (uint8_t *)&wake_up_ths, 1);
+  ret += lsm6dsv32x_read_reg(ctx, LSM6DSV32X_WAKE_UP_DUR, (uint8_t *)&wake_up_dur, 1);
 
-  if (ret == 0)
-  {
-    ret = lsm6dsv32x_read_reg(ctx, LSM6DSV32X_WAKE_UP_THS, (uint8_t *)&wake_up_ths, 1);
-  }
+  inactivity_dur.wu_inact_ths_w = val->inactivity_cfg.wu_inact_ths_w;
+  inactivity_dur.xl_inact_odr = val->inactivity_cfg.xl_inact_odr;
+  inactivity_dur.inact_dur = val->inactivity_cfg.inact_dur;
 
-  if ((val.wk_ths_mg < (uint32_t)(7.8125f * 63.0f))
-      && (val.inact_ths_mg < (uint32_t)(7.8125f * 63.0f)))
-  {
-    inactivity_dur.wu_inact_ths_w = 0;
+  inactivity_ths.inact_ths = val->inactivity_ths;
+  wake_up_ths.wk_ths = val->threshold;
+  wake_up_dur.wake_dur = val->duration;
 
-    tmp = (float_t)val.inact_ths_mg / 7.8125f;
-    inactivity_ths.inact_ths = (uint8_t)tmp;
-
-    tmp = (float_t)val.wk_ths_mg / 7.8125f;
-    wake_up_ths.wk_ths = (uint8_t)tmp;
-  }
-  else if ((val.wk_ths_mg < (uint32_t)(15.625f * 63.0f))
-           && (val.inact_ths_mg < (uint32_t)(15.625f * 63.0f)))
-  {
-    inactivity_dur.wu_inact_ths_w = 1;
-
-    tmp = (float_t)val.inact_ths_mg / 15.625f;
-    inactivity_ths.inact_ths = (uint8_t)tmp;
-
-    tmp = (float_t)val.wk_ths_mg / 15.625f;
-    wake_up_ths.wk_ths = (uint8_t)tmp;
-  }
-  else if ((val.wk_ths_mg < (uint32_t)(31.25f * 63.0f))
-           && (val.inact_ths_mg < (uint32_t)(31.25f * 63.0f)))
-  {
-    inactivity_dur.wu_inact_ths_w = 2;
-
-    tmp = (float_t)val.inact_ths_mg / 31.25f;
-    inactivity_ths.inact_ths = (uint8_t)tmp;
-
-    tmp = (float_t)val.wk_ths_mg / 31.25f;
-    wake_up_ths.wk_ths = (uint8_t)tmp;
-  }
-  else if ((val.wk_ths_mg < (uint32_t)(62.5f * 63.0f))
-           && (val.inact_ths_mg < (uint32_t)(62.5f * 63.0f)))
-  {
-    inactivity_dur.wu_inact_ths_w = 3;
-
-    tmp = (float_t)val.inact_ths_mg / 62.5f;
-    inactivity_ths.inact_ths = (uint8_t)tmp;
-
-    tmp = (float_t)val.wk_ths_mg / 62.5f;
-    wake_up_ths.wk_ths = (uint8_t)tmp;
-  }
-  else if ((val.wk_ths_mg < (uint32_t)(125.0f * 63.0f))
-           && (val.inact_ths_mg < (uint32_t)(125.0f * 63.0f)))
-  {
-    inactivity_dur.wu_inact_ths_w = 4;
-
-    tmp = (float_t)val.inact_ths_mg / 125.0f;
-    inactivity_ths.inact_ths = (uint8_t)tmp;
-
-    tmp = (float_t)val.wk_ths_mg / 125.0f;
-    wake_up_ths.wk_ths = (uint8_t)tmp;
-  }
-  else if ((val.wk_ths_mg < (uint32_t)(250.0f * 63.0f))
-           && (val.inact_ths_mg < (uint32_t)(250.0f * 63.0f)))
-  {
-    inactivity_dur.wu_inact_ths_w = 5;
-
-    tmp = (float_t)val.inact_ths_mg / 250.0f;
-    inactivity_ths.inact_ths = (uint8_t)tmp;
-
-    tmp = (float_t)val.wk_ths_mg / 250.0f;
-    wake_up_ths.wk_ths = (uint8_t)tmp;
-  }
-  else // out of limit
-  {
-    inactivity_dur.wu_inact_ths_w = 5;
-    inactivity_ths.inact_ths = 0x3FU;
-    wake_up_ths.wk_ths = 0x3FU;
-  }
-
-  if (ret == 0)
-  {
-    ret = lsm6dsv32x_write_reg(ctx, LSM6DSV32X_INACTIVITY_DUR, (uint8_t *)&inactivity_dur, 1);
-  }
-  if (ret == 0)
-  {
-
-    ret = lsm6dsv32x_write_reg(ctx, LSM6DSV32X_INACTIVITY_THS, (uint8_t *)&inactivity_ths, 1);
-  }
-  if (ret == 0)
-  {
-
-    ret = lsm6dsv32x_write_reg(ctx, LSM6DSV32X_WAKE_UP_THS, (uint8_t *)&wake_up_ths, 1);
-  }
+  ret = lsm6dsv32x_write_reg(ctx, LSM6DSV32X_INACTIVITY_DUR, (uint8_t *)&inactivity_dur, 1);
+  ret += lsm6dsv32x_write_reg(ctx, LSM6DSV32X_INACTIVITY_THS, (uint8_t *)&inactivity_ths, 1);
+  ret += lsm6dsv32x_write_reg(ctx, LSM6DSV32X_WAKE_UP_THS, (uint8_t *)&wake_up_ths, 1);
+  ret += lsm6dsv32x_write_reg(ctx, LSM6DSV32X_WAKE_UP_DUR, (uint8_t *)&wake_up_dur, 1);
 
   return ret;
 }
@@ -9889,69 +9920,21 @@ int32_t lsm6dsv32x_act_thresholds_get(stmdev_ctx_t *ctx,
   lsm6dsv32x_inactivity_dur_t inactivity_dur;
   lsm6dsv32x_inactivity_ths_t inactivity_ths;
   lsm6dsv32x_wake_up_ths_t wake_up_ths;
+  lsm6dsv32x_wake_up_dur_t wake_up_dur;
   int32_t ret;
-  float_t tmp;
 
   ret = lsm6dsv32x_read_reg(ctx, LSM6DSV32X_INACTIVITY_DUR, (uint8_t *)&inactivity_dur, 1);
-  if (ret == 0)
-  {
-    ret = lsm6dsv32x_read_reg(ctx, LSM6DSV32X_INACTIVITY_THS, (uint8_t *)&inactivity_ths, 1);
-  }
-  if (ret == 0)
-  {
-    ret = lsm6dsv32x_read_reg(ctx, LSM6DSV32X_WAKE_UP_THS, (uint8_t *)&wake_up_ths, 1);
-  }
+  ret += lsm6dsv32x_read_reg(ctx, LSM6DSV32X_INACTIVITY_THS, (uint8_t *)&inactivity_ths, 1);
+  ret += lsm6dsv32x_read_reg(ctx, LSM6DSV32X_WAKE_UP_THS, (uint8_t *)&wake_up_ths, 1);
+  ret += lsm6dsv32x_read_reg(ctx, LSM6DSV32X_WAKE_UP_DUR, (uint8_t *)&wake_up_dur, 1);
 
-  switch (inactivity_dur.wu_inact_ths_w)
-  {
-    case 0:
-      tmp = (float_t)wake_up_ths.wk_ths * 7.8125f;
-      val->wk_ths_mg = (uint32_t)tmp;
+  val->inactivity_cfg.wu_inact_ths_w = inactivity_dur.wu_inact_ths_w;
+  val->inactivity_cfg.xl_inact_odr = inactivity_dur.xl_inact_odr;
+  val->inactivity_cfg.inact_dur = inactivity_dur.inact_dur;
 
-      tmp = (float_t)inactivity_ths.inact_ths * 7.8125f;
-      val->inact_ths_mg = (uint32_t)tmp;
-      break;
-
-    case 1:
-      tmp = (float_t)wake_up_ths.wk_ths * 15.625f;
-      val->wk_ths_mg = (uint32_t)tmp;
-
-      tmp = (float_t)inactivity_ths.inact_ths * 15.625f;
-      val->inact_ths_mg = (uint32_t)tmp;
-      break;
-
-    case 2:
-      tmp = (float_t)wake_up_ths.wk_ths * 31.25f;
-      val->wk_ths_mg = (uint32_t)tmp;
-
-      tmp = (float_t)inactivity_ths.inact_ths * 31.25f;
-      val->inact_ths_mg = (uint32_t)tmp;
-      break;
-
-    case 3:
-      tmp = (float_t)wake_up_ths.wk_ths * 62.5f;
-      val->wk_ths_mg = (uint32_t)tmp;
-
-      tmp = (float_t)inactivity_ths.inact_ths * 62.5f;
-      val->inact_ths_mg = (uint32_t)tmp;
-      break;
-
-    case 4:
-      tmp = (float_t)wake_up_ths.wk_ths * 125.0f;
-      val->wk_ths_mg = (uint32_t)tmp;
-
-      tmp = (float_t)inactivity_ths.inact_ths * 125.0f;
-      val->inact_ths_mg = (uint32_t)tmp;
-      break;
-
-    default:
-      tmp = (float_t)wake_up_ths.wk_ths * 250.0f;
-      val->wk_ths_mg = (uint32_t)tmp;
-
-      tmp = (float_t)inactivity_ths.inact_ths * 250.0f;
-      val->inact_ths_mg = (uint32_t)tmp;
-      break;
-  }
+  val->inactivity_ths = inactivity_ths.inact_ths;
+  val->threshold = wake_up_ths.wk_ths;
+  val->duration = wake_up_dur.wake_dur;
 
   return ret;
 }
