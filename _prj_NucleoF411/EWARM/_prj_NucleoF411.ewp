@@ -349,6 +349,7 @@
                     <state>C:\Users\visconta\Projects\STdC\_resources\STMems_Finite_State_Machine\application_examples\lsm6dsv16x\Glance detection</state>
                     <state>C:\Users\visconta\Projects\STdC\_resources\STMems_Finite_State_Machine\application_examples\lsm6dsv16x\FourD position recognition</state>
                     <state>C:\Users\visconta\Projects\STdC\_resources\STMems_Machine_Learning_Core\application_examples\lsm6dsv16x\gym_activity_recognition</state>
+                    <state>C:\Users\visconta\Projects\STdC\lsm6dsv16b_STdC\driver</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1156,6 +1157,15 @@
                 <name>$PROJ_DIR$\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_uart.c</name>
             </file>
         </group>
+    </group>
+    <group>
+        <name>lsm6dsv16b</name>
+        <file>
+            <name>$PROJ_DIR$\..\..\lsm6dsv16b_STdC\examples\lsm6dsv16b_read_data_polling.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\lsm6dsv16b_STdC\driver\lsm6dsv16b_reg.c</name>
+        </file>
     </group>
     <group>
         <name>lsm6dsv16bx</name>
