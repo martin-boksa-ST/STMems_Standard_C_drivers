@@ -308,15 +308,13 @@ typedef struct
 {
 #if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
   uint8_t cnt_bdr_th                    : 2;
-  uint8_t ah_qvar_batch_en              : 1;
-  uint8_t not_used0                     : 2;
+  uint8_t not_used0                     : 3;
   uint8_t trig_counter_bdr              : 2;
   uint8_t not_used1                     : 1;
 #elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
   uint8_t not_used1                     : 1;
   uint8_t trig_counter_bdr              : 2;
-  uint8_t not_used0                     : 2;
-  uint8_t ah_qvar_batch_en              : 1;
+  uint8_t not_used0                     : 3;
   uint8_t cnt_bdr_th                    : 2;
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_counter_bdr_reg1_t;
@@ -488,19 +486,9 @@ typedef struct
 {
 #if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
   uint8_t lpf1_g_en                     : 1;
-  uint8_t not_used0                     : 1;
-  uint8_t ah_qvar2_en                   : 1;
-  uint8_t ah_qvar1_en                   : 1;
-  uint8_t ah_qvar_c_zin                 : 2;
-  uint8_t int2_drdy_ah_qvar             : 1;
-  uint8_t ah_qvar_en                    : 1;
+  uint8_t not_used0                     : 7;
 #elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t ah_qvar_en                    : 1;
-  uint8_t int2_drdy_ah_qvar             : 1;
-  uint8_t ah_qvar_c_zin                 : 2;
-  uint8_t ah_qvar1_en                   : 1;
-  uint8_t ah_qvar2_en                   : 1;
-  uint8_t not_used0                     : 1;
+  uint8_t not_used0                     : 7;
   uint8_t lpf1_g_en                     : 1;
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_ctrl7_t;
@@ -512,11 +500,11 @@ typedef struct
   uint8_t fs_xl                         : 2;
   uint8_t not_used0                     : 1;
   uint8_t xl_dualc_en                   : 1;
-  uint8_t ah_qvar_hpf                   : 1;
+  uint8_t not_used1                     : 1;
   uint8_t hp_lpf2_xl_bw                 : 3;
 #elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
   uint8_t hp_lpf2_xl_bw                 : 3;
-  uint8_t ah_qvar_hpf                   : 1;
+  uint8_t not_used1                     : 1;
   uint8_t xl_dualc_en                   : 1;
   uint8_t not_used0                     : 1;
   uint8_t fs_xl                         : 2;
@@ -534,9 +522,9 @@ typedef struct
   uint8_t hp_slope_xl_en                : 1;
   uint8_t xl_fastsettl_mode             : 1;
   uint8_t hp_ref_mode_xl                : 1;
-  uint8_t ah_qvar_lpf                   : 1;
+  uint8_t not_used1                     : 1;
 #elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t ah_qvar_lpf                   : 1;
+  uint8_t not_used1                     : 1;
   uint8_t hp_ref_mode_xl                : 1;
   uint8_t xl_fastsettl_mode             : 1;
   uint8_t hp_slope_xl_en                : 1;
@@ -554,32 +542,14 @@ typedef struct
   uint8_t st_xl                         : 2;
   uint8_t st_g                          : 2;
   uint8_t xl_st_offset                  : 1;
-  uint8_t ah_qvar_sw                    : 1;
-  uint8_t emb_func_debug                : 1;
-  uint8_t not_used0                     : 1;
+  uint8_t not_used0                     : 3;
 #elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t not_used0                     : 1;
-  uint8_t emb_func_debug                : 1;
-  uint8_t ah_qvar_sw                    : 1;
+  uint8_t not_used0                     : 3;
   uint8_t xl_st_offset                  : 1;
   uint8_t st_g                          : 2;
   uint8_t st_xl                         : 2;
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_ctrl10_t;
-
-#define LSM6DSV16B_CTRL_STATUS                   0x1AU
-typedef struct
-{
-#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t not_used0                     : 2;
-  uint8_t fsm_wr_ctrl_status            : 1;
-  uint8_t not_used1                     : 5;
-#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t not_used1                     : 5;
-  uint8_t fsm_wr_ctrl_status            : 1;
-  uint8_t not_used0                     : 2;
-#endif /* DRV_BYTE_ORDER */
-} lsm6dsv16b_ctrl_status_t;
 
 #define LSM6DSV16B_FIFO_STATUS1                  0x1BU
 typedef struct
@@ -644,13 +614,11 @@ typedef struct
   uint8_t xlda                          : 1;
   uint8_t gda                           : 1;
   uint8_t tda                           : 1;
-  uint8_t ah_qvarda                     : 1;
-  uint8_t not_used0                     : 3;
+  uint8_t not_used0                     : 4;
   uint8_t timestamp_endcount            : 1;
 #elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
   uint8_t timestamp_endcount            : 1;
-  uint8_t not_used0                     : 3;
-  uint8_t ah_qvarda                     : 1;
+  uint8_t not_used0                     : 4;
   uint8_t tda                           : 1;
   uint8_t gda                           : 1;
   uint8_t xlda                          : 1;
@@ -857,26 +825,6 @@ typedef struct
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_ui_outx_h_a_ois_dualc_t;
 
-#define LSM6DSV16B_AH_QVAR_OUT_L                 0x3AU
-typedef struct
-{
-#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t ah_qvar                       : 8;
-#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t ah_qvar                       : 8;
-#endif /* DRV_BYTE_ORDER */
-} lsm6dsv16b_ah_qvar_out_l_t;
-
-#define LSM6DSV16B_AH_QVAR_OUT_H                 0x3BU
-typedef struct
-{
-#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t ah_qvar                       : 8;
-#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t ah_qvar                       : 8;
-#endif /* DRV_BYTE_ORDER */
-} lsm6dsv16b_ah_qvar_out_h_t;
-
 #define LSM6DSV16B_TIMESTAMP0                    0x40U
 typedef struct
 {
@@ -1033,24 +981,6 @@ typedef struct
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_fsm_status_mainpage_t;
 
-#define LSM6DSV16B_MLC_STATUS_MAINPAGE           0x4BU
-typedef struct
-{
-#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t is_mlc1                       : 1;
-  uint8_t is_mlc2                       : 1;
-  uint8_t is_mlc3                       : 1;
-  uint8_t is_mlc4                       : 1;
-  uint8_t not_used0                     : 4;
-#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t not_used0                     : 4;
-  uint8_t is_mlc4                       : 1;
-  uint8_t is_mlc3                       : 1;
-  uint8_t is_mlc2                       : 1;
-  uint8_t is_mlc1                       : 1;
-#endif /* DRV_BYTE_ORDER */
-} lsm6dsv16b_mlc_status_mainpage_t;
-
 #define LSM6DSV16B_INTERNAL_FREQ                 0x4FU
 typedef struct
 {
@@ -1118,13 +1048,13 @@ typedef struct
   uint8_t tap_y_en                      : 1;
   uint8_t tap_z_en                      : 1;
   uint8_t slope_fds                     : 1;
-  uint8_t hw_func_mask_xl_settl         : 1;
+  uint8_t not_used0                     : 1;
   uint8_t low_pass_on_6d                : 1;
   uint8_t not_used1                     : 1;
 #elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
   uint8_t not_used1                     : 1;
   uint8_t low_pass_on_6d                : 1;
-  uint8_t hw_func_mask_xl_settl         : 1;
+  uint8_t not_used0                     : 1;
   uint8_t slope_fds                     : 1;
   uint8_t tap_z_en                      : 1;
   uint8_t tap_y_en                      : 1;
@@ -1349,24 +1279,6 @@ typedef struct
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_tdm_cfg2_t;
 
-#define LSM6DSV16B_UI_INT_OIS                    0x6FU
-typedef struct
-{
-#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t not_used0                     : 4;
-  uint8_t st_ois_clampdis               : 1;
-  uint8_t not_used1                     : 1;
-  uint8_t drdy_mask_ois                 : 1;
-  uint8_t int2_drdy_ois                 : 1;
-#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t int2_drdy_ois                 : 1;
-  uint8_t drdy_mask_ois                 : 1;
-  uint8_t not_used1                     : 1;
-  uint8_t st_ois_clampdis               : 1;
-  uint8_t not_used0                     : 4;
-#endif /* DRV_BYTE_ORDER */
-} lsm6dsv16b_ui_int_ois_t;
-
 #define LSM6DSV16B_Z_OFS_USR                     0x73U
 typedef struct
 {
@@ -1503,11 +1415,9 @@ typedef struct
   uint8_t pedo_en                       : 1;
   uint8_t tilt_en                       : 1;
   uint8_t sign_motion_en                : 1;
-  uint8_t not_used1                     : 1;
-  uint8_t mlc_before_fsm_en             : 1;
+  uint8_t not_used1                     : 2;
 #elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t mlc_before_fsm_en             : 1;
-  uint8_t not_used1                     : 1;
+  uint8_t not_used1                     : 2;
   uint8_t sign_motion_en                : 1;
   uint8_t tilt_en                       : 1;
   uint8_t pedo_en                       : 1;
@@ -1524,11 +1434,9 @@ typedef struct
   uint8_t fsm_en                        : 1;
   uint8_t not_used0                     : 2;
   uint8_t fifo_compr_en                 : 1;
-  uint8_t mlc_en                        : 1;
-  uint8_t not_used1                     : 3;
+  uint8_t not_used1                     : 4;
 #elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t not_used1                     : 3;
-  uint8_t mlc_en                        : 1;
+  uint8_t not_used1                     : 4;
   uint8_t fifo_compr_en                 : 1;
   uint8_t not_used0                     : 2;
   uint8_t fsm_en                        : 1;
@@ -1613,24 +1521,6 @@ typedef struct
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_fsm_int1_t;
 
-#define LSM6DSV16B_MLC_INT1                      0x0DU
-typedef struct
-{
-#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t int1_mlc1                     : 1;
-  uint8_t int1_mlc2                     : 1;
-  uint8_t int1_mlc3                     : 1;
-  uint8_t int1_mlc4                     : 1;
-  uint8_t not_used0                     : 4;
-#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t not_used0                     : 4;
-  uint8_t int1_mlc4                     : 1;
-  uint8_t int1_mlc3                     : 1;
-  uint8_t int1_mlc2                     : 1;
-  uint8_t int1_mlc1                     : 1;
-#endif /* DRV_BYTE_ORDER */
-} lsm6dsv16b_mlc_int1_t;
-
 #define LSM6DSV16B_EMB_FUNC_INT2                 0x0EU
 typedef struct
 {
@@ -1647,7 +1537,7 @@ typedef struct
   uint8_t int2_sig_mot                  : 1;
   uint8_t int2_tilt                     : 1;
   uint8_t int2_step_detector            : 1;
-  uint8_t not_used0                     : 3;
+  uint8_t not_used0                     : 3;/
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_emb_func_int2_t;
 
@@ -1674,24 +1564,6 @@ typedef struct
   uint8_t int2_fsm1                     : 1;
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_fsm_int2_t;
-
-#define LSM6DSV16B_MLC_INT2                      0x11U
-typedef struct
-{
-#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t int2_mlc1                     : 1;
-  uint8_t int2_mlc2                     : 1;
-  uint8_t int2_mlc3                     : 1;
-  uint8_t int2_mlc4                     : 1;
-  uint8_t not_used0                     : 4;
-#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t not_used0                     : 4;
-  uint8_t int2_mlc4                     : 1;
-  uint8_t int2_mlc3                     : 1;
-  uint8_t int2_mlc2                     : 1;
-  uint8_t int2_mlc1                     : 1;
-#endif /* DRV_BYTE_ORDER */
-} lsm6dsv16b_mlc_int2_t;
 
 #define LSM6DSV16B_EMB_FUNC_STATUS               0x12U
 typedef struct
@@ -1737,24 +1609,6 @@ typedef struct
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_fsm_status_t;
 
-#define LSM6DSV16B_MLC_STATUS                    0x15U
-typedef struct
-{
-#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t is_mlc1                       : 1;
-  uint8_t is_mlc2                       : 1;
-  uint8_t is_mlc3                       : 1;
-  uint8_t is_mlc4                       : 1;
-  uint8_t not_used0                     : 4;
-#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t not_used0                     : 4;
-  uint8_t is_mlc4                       : 1;
-  uint8_t is_mlc3                       : 1;
-  uint8_t is_mlc2                       : 1;
-  uint8_t is_mlc1                       : 1;
-#endif /* DRV_BYTE_ORDER */
-} lsm6dsv16b_mlc_status_t;
-
 #define LSM6DSV16B_PAGE_RW                       0x17U
 typedef struct
 {
@@ -1781,9 +1635,9 @@ typedef struct
   uint8_t sflp_gravity_fifo_en          : 1;
   uint8_t sflp_gbias_fifo_en            : 1;
   uint8_t step_counter_fifo_en          : 1;
-  uint8_t mlc_fifo_en                   : 1;
+  uint8_t not_used2                     : 1;
 #elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t mlc_fifo_en                   : 1;
+  uint8_t not_used2                     : 1;
   uint8_t step_counter_fifo_en          : 1;
   uint8_t sflp_gbias_fifo_en            : 1;
   uint8_t sflp_gravity_fifo_en          : 1;
@@ -1792,20 +1646,6 @@ typedef struct
   uint8_t not_used0                     : 1;
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_emb_func_fifo_en_a_t;
-
-#define LSM6DSV16B_EMB_FUNC_FIFO_EN_B            0x45U
-typedef struct
-{
-#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t not_used0                     : 1;
-  uint8_t mlc_filter_feature_fifo_en    : 1;
-  uint8_t not_used1                     : 6;
-#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t not_used1                     : 6;
-  uint8_t mlc_filter_feature_fifo_en    : 1;
-  uint8_t not_used0                     : 1;
-#endif /* DRV_BYTE_ORDER */
-} lsm6dsv16b_emb_func_fifo_en_b_t;
 
 #define LSM6DSV16B_FSM_ENABLE                    0x46U
 typedef struct
@@ -1850,16 +1690,6 @@ typedef struct
   uint8_t fsm_lc                        : 8;
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_fsm_long_counter_h_t;
-
-#define LSM6DSV16B_INT_ACK_MASK                  0x4BU
-typedef struct
-{
-#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t iack_mask                     : 8;
-#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t iack_mask                     : 8;
-#endif /* DRV_BYTE_ORDER */
-} lsm6dsv16b_int_ack_mask_t;
 
 #define LSM6DSV16B_FSM_OUTS1                     0x4CU
 typedef struct
@@ -2081,20 +1911,6 @@ typedef struct
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_fsm_odr_t;
 
-#define LSM6DSV16B_MLC_ODR                       0x60U
-typedef struct
-{
-#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t not_used0                     : 4;
-  uint8_t mlc_odr                       : 3;
-  uint8_t not_used1                     : 1;
-#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t not_used1                     : 1;
-  uint8_t mlc_odr                       : 3;
-  uint8_t not_used0                     : 4;
-#endif /* DRV_BYTE_ORDER */
-} lsm6dsv16b_mlc_odr_t;
-
 #define LSM6DSV16B_STEP_COUNTER_L                0x62U
 typedef struct
 {
@@ -2147,11 +1963,9 @@ typedef struct
   uint8_t step_det_init                 : 1;
   uint8_t tilt_init                     : 1;
   uint8_t sig_mot_init                  : 1;
-  uint8_t not_used1                     : 1;
-  uint8_t mlc_before_fsm_init           : 1;
+  uint8_t not_used1                     : 2;
 #elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t mlc_before_fsm_init           : 1;
-  uint8_t not_used1                     : 1;
+  uint8_t not_used1                     : 2;
   uint8_t sig_mot_init                  : 1;
   uint8_t tilt_init                     : 1;
   uint8_t step_det_init                 : 1;
@@ -2168,56 +1982,14 @@ typedef struct
   uint8_t fsm_init                      : 1;
   uint8_t not_used0                     : 2;
   uint8_t fifo_compr_init               : 1;
-  uint8_t mlc_init                      : 1;
-  uint8_t not_used1                     : 3;
+  uint8_t not_used1                     : 4;
 #elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t not_used1                     : 3;
-  uint8_t mlc_init                      : 1;
+  uint8_t not_used1                     : 4;
   uint8_t fifo_compr_init               : 1;
   uint8_t not_used0                     : 2;
   uint8_t fsm_init                      : 1;
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_emb_func_init_b_t;
-
-#define LSM6DSV16B_MLC1_SRC                      0x70U
-typedef struct
-{
-#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t mlc1_src                      : 8;
-#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t mlc1_src                      : 8;
-#endif /* DRV_BYTE_ORDER */
-} lsm6dsv16b_mlc1_src_t;
-
-#define LSM6DSV16B_MLC2_SRC                      0x71U
-typedef struct
-{
-#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t mlc2_src                      : 8;
-#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t mlc2_src                      : 8;
-#endif /* DRV_BYTE_ORDER */
-} lsm6dsv16b_mlc2_src_t;
-
-#define LSM6DSV16B_MLC3_SRC                      0x72U
-typedef struct
-{
-#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t mlc3_src                      : 8;
-#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t mlc3_src                      : 8;
-#endif /* DRV_BYTE_ORDER */
-} lsm6dsv16b_mlc3_src_t;
-
-#define LSM6DSV16B_MLC4_SRC                      0x73U
-typedef struct
-{
-#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t mlc4_src                      : 8;
-#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t mlc4_src                      : 8;
-#endif /* DRV_BYTE_ORDER */
-} lsm6dsv16b_mlc4_src_t;
 
 /**
   * @}
@@ -2289,26 +2061,6 @@ typedef struct
   uint8_t gbiasz                        : 8;
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_sflp_game_gbiasz_h_t;
-
-#define LSM6DSV16B_FSM_QVAR_SENSITIVITY_L        0xBAU
-typedef struct
-{
-#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t fsm_qvar_s                    : 8;
-#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t fsm_qvar_s                    : 8;
-#endif /* DRV_BYTE_ORDER */
-} lsm6dsv16b_fsm_qvar_sensitivity_l_t;
-
-#define LSM6DSV16B_FSM_QVAR_SENSITIVITY_H        0xBBU
-typedef struct
-{
-#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t fsm_qvar_s                    : 8;
-#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t fsm_qvar_s                    : 8;
-#endif /* DRV_BYTE_ORDER */
-} lsm6dsv16b_fsm_qvar_sensitivity_h_t;
 
 /**
   * @}
@@ -2418,26 +2170,6 @@ typedef struct
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_pedo_sc_deltat_h_t;
 
-#define LSM6DSV16B_MLC_QVAR_SENSITIVITY_L        0x1E8U
-typedef struct
-{
-#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t mlc_qvar_s                    : 8;
-#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t mlc_qvar_s                    : 8;
-#endif /* DRV_BYTE_ORDER */
-} lsm6dsv16b_mlc_qvar_sensitivity_l_t;
-
-#define LSM6DSV16B_MLC_QVAR_SENSITIVITY_H        0x1E9U
-typedef struct
-{
-#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t mlc_qvar_s                    : 8;
-#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t mlc_qvar_s                    : 8;
-#endif /* DRV_BYTE_ORDER */
-} lsm6dsv16b_mlc_qvar_sensitivity_h_t;
-
 /**
   * @}
   *
@@ -2505,8 +2237,6 @@ typedef union
   lsm6dsv16b_ui_outy_h_a_ois_dualc_t    ui_outy_h_a_ois_dualc;
   lsm6dsv16b_ui_outx_l_a_ois_dualc_t    ui_outx_l_a_ois_dualc;
   lsm6dsv16b_ui_outx_h_a_ois_dualc_t    ui_outx_h_a_ois_dualc;
-  lsm6dsv16b_ah_qvar_out_l_t    ah_qvar_out_l;
-  lsm6dsv16b_ah_qvar_out_h_t    ah_qvar_out_h;
   lsm6dsv16b_timestamp0_t    timestamp0;
   lsm6dsv16b_timestamp1_t    timestamp1;
   lsm6dsv16b_timestamp2_t    timestamp2;
@@ -2516,7 +2246,6 @@ typedef union
   lsm6dsv16b_d6d_src_t    d6d_src;
   lsm6dsv16b_emb_func_status_mainpage_t    emb_func_status_mainpage;
   lsm6dsv16b_fsm_status_mainpage_t    fsm_status_mainpage;
-  lsm6dsv16b_mlc_status_mainpage_t    mlc_status_mainpage;
   lsm6dsv16b_internal_freq_t    internal_freq;
   lsm6dsv16b_functions_enable_t    functions_enable;
   lsm6dsv16b_inactivity_dur_t    inactivity_dur;
@@ -2535,7 +2264,6 @@ typedef union
   lsm6dsv16b_tdm_cfg0_t    tdm_cfg0;
   lsm6dsv16b_tdm_cfg1_t    tdm_cfg1;
   lsm6dsv16b_tdm_cfg2_t    tdm_cfg2;
-  lsm6dsv16b_ui_int_ois_t    ui_int_ois;
   lsm6dsv16b_z_ofs_usr_t    z_ofs_usr;
   lsm6dsv16b_y_ofs_usr_t    y_ofs_usr;
   lsm6dsv16b_x_ofs_usr_t    x_ofs_usr;
@@ -2554,16 +2282,12 @@ typedef union
   lsm6dsv16b_page_value_t    page_value;
   lsm6dsv16b_emb_func_int1_t    emb_func_int1;
   lsm6dsv16b_fsm_int1_t    fsm_int1;
-  lsm6dsv16b_mlc_int1_t    mlc_int1;
   lsm6dsv16b_emb_func_int2_t    emb_func_int2;
   lsm6dsv16b_fsm_int2_t    fsm_int2;
-  lsm6dsv16b_mlc_int2_t    mlc_int2;
   lsm6dsv16b_emb_func_status_t    emb_func_status;
   lsm6dsv16b_fsm_status_t    fsm_status;
-  lsm6dsv16b_mlc_status_t    mlc_status;
   lsm6dsv16b_page_rw_t    page_rw;
   lsm6dsv16b_emb_func_fifo_en_a_t    emb_func_fifo_en_a;
-  lsm6dsv16b_emb_func_fifo_en_b_t    emb_func_fifo_en_b;
   lsm6dsv16b_fsm_enable_t    fsm_enable;
   lsm6dsv16b_fsm_long_counter_l_t    fsm_long_counter_l;
   lsm6dsv16b_fsm_long_counter_h_t    fsm_long_counter_h;
@@ -2576,18 +2300,11 @@ typedef union
   lsm6dsv16b_fsm_outs7_t    fsm_outs7;
   lsm6dsv16b_fsm_outs8_t    fsm_outs8;
   lsm6dsv16b_fsm_odr_t    fsm_odr;
-  lsm6dsv16b_mlc_odr_t    mlc_odr;
   lsm6dsv16b_step_counter_l_t    step_counter_l;
   lsm6dsv16b_step_counter_h_t    step_counter_h;
   lsm6dsv16b_emb_func_src_t    emb_func_src;
   lsm6dsv16b_emb_func_init_a_t    emb_func_init_a;
   lsm6dsv16b_emb_func_init_b_t    emb_func_init_b;
-  lsm6dsv16b_mlc1_src_t    mlc1_src;
-  lsm6dsv16b_mlc2_src_t    mlc2_src;
-  lsm6dsv16b_mlc3_src_t    mlc3_src;
-  lsm6dsv16b_mlc4_src_t    mlc4_src;
-  lsm6dsv16b_fsm_qvar_sensitivity_l_t    fsm_qvar_sensitivity_l;
-  lsm6dsv16b_fsm_qvar_sensitivity_h_t    fsm_qvar_sensitivity_h;
   lsm6dsv16b_fsm_lc_timeout_l_t    fsm_lc_timeout_l;
   lsm6dsv16b_fsm_lc_timeout_h_t    fsm_lc_timeout_h;
   lsm6dsv16b_fsm_programs_t    fsm_programs;
@@ -2597,8 +2314,6 @@ typedef union
   lsm6dsv16b_pedo_deb_steps_conf_t    pedo_deb_steps_conf;
   lsm6dsv16b_pedo_sc_deltat_l_t    pedo_sc_deltat_l;
   lsm6dsv16b_pedo_sc_deltat_h_t    pedo_sc_deltat_h;
-  lsm6dsv16b_mlc_qvar_sensitivity_l_t    mlc_qvar_sensitivity_l;
-  lsm6dsv16b_mlc_qvar_sensitivity_h_t    mlc_qvar_sensitivity_h;
   bitwise_t    bitwise;
   uint8_t    byte;
 } lsm6dsv16b_reg_t;
@@ -2791,7 +2506,6 @@ typedef struct
   uint8_t drdy_xl                       : 1;
   uint8_t drdy_gy                       : 1;
   uint8_t drdy_temp                     : 1;
-  uint8_t drdy_ah_qvar                  : 1;
   uint8_t gy_settling                   : 1;
   uint8_t den_flag                      : 1;
   uint8_t timestamp                     : 1;
@@ -2832,10 +2546,6 @@ typedef struct
   uint8_t fsm6                          : 1;
   uint8_t fsm7                          : 1;
   uint8_t fsm8                          : 1;
-  uint8_t mlc1                          : 1;
-  uint8_t mlc2                          : 1;
-  uint8_t mlc3                          : 1;
-  uint8_t mlc4                          : 1;
   uint8_t fifo_bdr                      : 1;
   uint8_t fifo_full                     : 1;
   uint8_t fifo_ovr                      : 1;
@@ -2863,8 +2573,6 @@ int32_t lsm6dsv16b_dual_acceleration_raw_get(stmdev_ctx_t *ctx, int16_t *val);
 
 int32_t lsm6dsv16b_ois_dual_acceleration_raw_get(stmdev_ctx_t *ctx,
                                                   int16_t *val);
-
-int32_t lsm6dsv16b_ah_qvar_raw_get(stmdev_ctx_t *ctx, int16_t *val);
 
 int32_t lsm6dsv16b_odr_cal_reg_get(stmdev_ctx_t *ctx, int8_t *val);
 
@@ -2927,16 +2635,6 @@ int32_t lsm6dsv16b_filt_gy_lp1_bandwidth_get(stmdev_ctx_t *ctx,
 
 int32_t lsm6dsv16b_filt_gy_lp1_set(stmdev_ctx_t *ctx, uint8_t val);
 int32_t lsm6dsv16b_filt_gy_lp1_get(stmdev_ctx_t *ctx, uint8_t *val);
-
-typedef struct
-{
-  uint8_t hpf                           : 1;
-  uint8_t lpf                           : 1;
-} lsm6dsv16b_filt_ah_qvar_conf_t;
-int32_t lsm6dsv16b_filt_ah_qvar_conf_set(stmdev_ctx_t *ctx,
-                                          lsm6dsv16b_filt_ah_qvar_conf_t val);
-int32_t lsm6dsv16b_filt_ah_qvar_conf_get(stmdev_ctx_t *ctx,
-                                          lsm6dsv16b_filt_ah_qvar_conf_t *val);
 
 typedef enum
 {
@@ -3088,10 +2786,6 @@ typedef struct
   uint8_t fsm6                          : 1;
   uint8_t fsm7                          : 1;
   uint8_t fsm8                          : 1;
-  uint8_t mlc1                          : 1;
-  uint8_t mlc2                          : 1;
-  uint8_t mlc3                          : 1;
-  uint8_t mlc4                          : 1;
 } lsm6dsv16b_pin_int1_route_t;
 int32_t lsm6dsv16b_pin_int1_route_set(stmdev_ctx_t *ctx,
                                        lsm6dsv16b_pin_int1_route_t val);
@@ -3132,10 +2826,6 @@ typedef struct
   uint8_t fsm6                          : 1;
   uint8_t fsm7                          : 1;
   uint8_t fsm8                          : 1;
-  uint8_t mlc1                          : 1;
-  uint8_t mlc2                          : 1;
-  uint8_t mlc3                          : 1;
-  uint8_t mlc4                          : 1;
 } lsm6dsv16b_pin_int2_route_t;
 int32_t lsm6dsv16b_pin_int2_route_set(stmdev_ctx_t *ctx,
                                        lsm6dsv16b_pin_int2_route_t val);
@@ -3417,9 +3107,6 @@ int32_t lsm6dsv16b_fifo_batch_counter_threshold_set(stmdev_ctx_t *ctx,
 int32_t lsm6dsv16b_fifo_batch_counter_threshold_get(stmdev_ctx_t *ctx,
                                                      uint16_t *val);
 
-int32_t lsm6dsv16b_fifo_batch_ah_qvar_set(stmdev_ctx_t *ctx, uint8_t val);
-int32_t lsm6dsv16b_fifo_batch_ah_qvar_get(stmdev_ctx_t *ctx, uint8_t *val);
-
 typedef enum
 {
   LSM6DSV16B_XL_BATCH_EVENT                      = 0x0,
@@ -3476,11 +3163,7 @@ typedef struct
     LSM6DSV16B_SFLP_GAME_ROTATION_VECTOR_TAG     = 0x13,
     LSM6DSV16B_SFLP_GYROSCOPE_BIAS_TAG           = 0x16,
     LSM6DSV16B_SFLP_GRAVITY_VECTOR_TAG           = 0x17,
-    LSM6DSV16B_MLC_RESULT_TAG                    = 0x1A,
-    LSM6DSV16B_MLC_FILTER                        = 0x1B,
-    LSM6DSV16B_MLC_FEATURE                       = 0x1C,
     LSM6DSV16B_XL_DUAL_CORE                      = 0x1D,
-    LSM6DSV16B_AH_QVAR                           = 0x1F,
   } tag;
   uint8_t cnt;
   uint8_t data[6];
@@ -3490,12 +3173,6 @@ int32_t lsm6dsv16b_fifo_out_raw_get(stmdev_ctx_t *ctx,
 
 int32_t lsm6dsv16b_fifo_stpcnt_batch_set(stmdev_ctx_t *ctx, uint8_t val);
 int32_t lsm6dsv16b_fifo_stpcnt_batch_get(stmdev_ctx_t *ctx, uint8_t *val);
-
-int32_t lsm6dsv16b_fifo_mlc_batch_set(stmdev_ctx_t *ctx, uint8_t val);
-int32_t lsm6dsv16b_fifo_mlc_batch_get(stmdev_ctx_t *ctx, uint8_t *val);
-
-int32_t lsm6dsv16b_fifo_mlc_filt_batch_set(stmdev_ctx_t *ctx, uint8_t val);
-int32_t lsm6dsv16b_fifo_mlc_filt_batch_get(stmdev_ctx_t *ctx, uint8_t *val);
 
 typedef enum
 {
@@ -3537,14 +3214,6 @@ int32_t lsm6dsv16b_tilt_mode_get(stmdev_ctx_t *ctx, uint8_t *val);
 int32_t lsm6dsv16b_sflp_game_rotation_set(stmdev_ctx_t *ctx, uint16_t val);
 int32_t lsm6dsv16b_sflp_game_rotation_get(stmdev_ctx_t *ctx, uint16_t *val);
 
-typedef struct
-{
-  float_t gbias_x; /* dps */
-  float_t gbias_y; /* dps */
-  float_t gbias_z; /* dps */
-} lsm6dsv16b_sflp_gbias_t;
-int32_t lsm6dsv16b_sflp_game_gbias_set(stmdev_ctx_t *ctx,
-                                        lsm6dsv16b_sflp_gbias_t *val);
 
 int32_t lsm6dsv16b_sflp_configure(stmdev_ctx_t *ctx);
 
@@ -3571,7 +3240,6 @@ int32_t lsm6dsv16b_fsm_permission_set(stmdev_ctx_t *ctx,
                                        lsm6dsv16b_fsm_permission_t val);
 int32_t lsm6dsv16b_fsm_permission_get(stmdev_ctx_t *ctx,
                                        lsm6dsv16b_fsm_permission_t *val);
-int32_t lsm6dsv16b_fsm_permission_status(stmdev_ctx_t *ctx, uint8_t *val);
 
 typedef enum
 {
@@ -3636,43 +3304,6 @@ int32_t lsm6dsv16b_fsm_number_of_programs_get(stmdev_ctx_t *ctx, uint8_t *val);
 int32_t lsm6dsv16b_fsm_start_address_set(stmdev_ctx_t *ctx, uint16_t val);
 int32_t lsm6dsv16b_fsm_start_address_get(stmdev_ctx_t *ctx, uint16_t *val);
 
-typedef enum
-{
-  LSM6DSV16B_DISABLE                             = 0x0,
-  LSM6DSV16B_MLC_BEFORE_FSM                      = 0x1,
-  LSM6DSV16B_MLC_AFTER_FSM                       = 0x2,
-} lsm6dsv16b_mlc_mode_t;
-int32_t lsm6dsv16b_mlc_mode_set(stmdev_ctx_t *ctx, lsm6dsv16b_mlc_mode_t val);
-int32_t lsm6dsv16b_mlc_mode_get(stmdev_ctx_t *ctx,
-                                 lsm6dsv16b_mlc_mode_t *val);
-
-typedef enum
-{
-  LSM6DSV16B_MLC_15Hz                            = 0x0,
-  LSM6DSV16B_MLC_30Hz                            = 0x1,
-  LSM6DSV16B_MLC_60Hz                            = 0x2,
-  LSM6DSV16B_MLC_120Hz                           = 0x3,
-  LSM6DSV16B_MLC_240Hz                           = 0x4,
-  LSM6DSV16B_MLC_480Hz                           = 0x5,
-  LSM6DSV16B_MLC_960Hz                           = 0x6,
-} lsm6dsv16b_mlc_data_rate_t;
-int32_t lsm6dsv16b_mlc_data_rate_set(stmdev_ctx_t *ctx,
-                                      lsm6dsv16b_mlc_data_rate_t val);
-int32_t lsm6dsv16b_mlc_data_rate_get(stmdev_ctx_t *ctx,
-                                      lsm6dsv16b_mlc_data_rate_t *val);
-
-typedef struct
-{
-  lsm6dsv16b_mlc1_src_t mlc1_src;
-  lsm6dsv16b_mlc2_src_t mlc2_src;
-  lsm6dsv16b_mlc3_src_t mlc3_src;
-  lsm6dsv16b_mlc4_src_t mlc4_src;
-} lsm6dsv16b_mlc_out_t;
-int32_t lsm6dsv16b_mlc_out_get(stmdev_ctx_t *ctx, lsm6dsv16b_mlc_out_t *val);
-
-int32_t lsm6dsv16b_mlc_qvar_sensitivity_set(stmdev_ctx_t *ctx, uint16_t val);
-int32_t lsm6dsv16b_mlc_qvar_sensitivity_get(stmdev_ctx_t *ctx, uint16_t *val);
-
 int32_t lsm6dsv16b_xl_offset_on_out_set(stmdev_ctx_t *ctx, uint8_t val);
 int32_t lsm6dsv16b_xl_offset_on_out_get(stmdev_ctx_t *ctx, uint8_t *val);
 
@@ -3686,32 +3317,6 @@ int32_t lsm6dsv16b_xl_offset_mg_set(stmdev_ctx_t *ctx,
                                      lsm6dsv16bxl_offset_mg_t val);
 int32_t lsm6dsv16b_xl_offset_mg_get(stmdev_ctx_t *ctx,
                                      lsm6dsv16bxl_offset_mg_t *val);
-
-typedef struct
-{
-  uint8_t ah_qvar1_en                   : 1;
-  uint8_t ah_qvar2_en                   : 1;
-  uint8_t swaps                         : 1;
-} lsm6dsv16b_ah_qvar_mode_t;
-int32_t lsm6dsv16b_ah_qvar_mode_set(stmdev_ctx_t *ctx,
-                                     lsm6dsv16b_ah_qvar_mode_t val);
-int32_t lsm6dsv16b_ah_qvar_mode_get(stmdev_ctx_t *ctx,
-                                     lsm6dsv16b_ah_qvar_mode_t *val);
-
-typedef enum
-{
-  LSM6DSV16B_2400MOhm                            = 0x0,
-  LSM6DSV16B_730MOhm                             = 0x1,
-  LSM6DSV16B_300MOhm                             = 0x2,
-  LSM6DSV16B_255MOhm                             = 0x3,
-} lsm6dsv16b_ah_qvar_zin_t;
-int32_t lsm6dsv16b_ah_qvar_zin_set(stmdev_ctx_t *ctx,
-                                    lsm6dsv16b_ah_qvar_zin_t val);
-int32_t lsm6dsv16b_ah_qvar_zin_get(stmdev_ctx_t *ctx,
-                                    lsm6dsv16b_ah_qvar_zin_t *val);
-
-int32_t lsm6dsv16b_fsm_qvar_sensitivity_set(stmdev_ctx_t *ctx, uint16_t val);
-int32_t lsm6dsv16b_fsm_qvar_sensitivity_get(stmdev_ctx_t *ctx, uint16_t *val);
 
 typedef enum
 {
@@ -3731,8 +3336,10 @@ int32_t lsm6dsv16b_tdm_tdmout_pull_up_get(stmdev_ctx_t *ctx, uint8_t *val);
 
 typedef enum
 {
+  LSM6DSV16B_WCLK_8kHZ_BCLK_1024kHz              = 0x0,
   LSM6DSV16B_WCLK_16kHZ_BCLK_2048kHz             = 0x1,
   LSM6DSV16B_WCLK_8kHZ_BCLK_2048kHz              = 0x4,
+  LSM6DSV16B_WCLK_16kHZ_BCLK_1024kHz             = 0x5,
 } lsm6dsv16b_tdm_wclk_bclk_t;
 int32_t lsm6dsv16b_tdm_wclk_bclk_set(stmdev_ctx_t *ctx,
                                       lsm6dsv16b_tdm_wclk_bclk_t val);
