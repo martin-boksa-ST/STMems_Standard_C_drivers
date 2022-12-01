@@ -439,7 +439,7 @@ typedef struct
 typedef struct
 {
 #if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
-  uint8_t int2_in_lh                    : 1;
+  uint8_t not_used1                     : 1;
   uint8_t drdy_pulsed                   : 1;
   uint8_t int2_drdy_temp                : 1;
   uint8_t drdy_mask                     : 1;
@@ -451,7 +451,7 @@ typedef struct
   uint8_t drdy_mask                     : 1;
   uint8_t int2_drdy_temp                : 1;
   uint8_t drdy_pulsed                   : 1;
-  uint8_t int2_in_lh                    : 1;
+  uint8_t not_used1                     : 1;
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_ctrl4_t;
 
@@ -474,9 +474,11 @@ typedef struct
 {
 #if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
   uint8_t fs_g                          : 4;
-  uint8_t lpf1_g_bw                     : 4;
+  uint8_t lpf1_g_bw                     : 3;
+  uint8_t not_used0                     : 1;
 #elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t lpf1_g_bw                     : 4;
+  uint8_t not_used0                     : 1;
+  uint8_t lpf1_g_bw                     : 3;
   uint8_t fs_g                          : 4;
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_ctrl6_t;
@@ -542,14 +544,32 @@ typedef struct
   uint8_t st_xl                         : 2;
   uint8_t st_g                          : 2;
   uint8_t xl_st_offset                  : 1;
-  uint8_t not_used0                     : 3;
+  uint8_t not_used1                     : 1;
+  uint8_t emb_func_debug                : 1;
+  uint8_t not_used0                     : 1;
 #elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
-  uint8_t not_used0                     : 3;
+  uint8_t not_used0                     : 1;
+  uint8_t emb_func_debug                : 1;
+  uint8_t not_used1                     : 1;
   uint8_t xl_st_offset                  : 1;
   uint8_t st_g                          : 2;
   uint8_t st_xl                         : 2;
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_ctrl10_t;
+
+#define LSM6DSV16B_CTRL_STATUS                   0x1AU
+typedef struct
+{
+#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
+  uint8_t not_used0                     : 2;
+  uint8_t fsm_wr_ctrl_status            : 1;
+  uint8_t not_used1                     : 5;
+#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
+  uint8_t not_used1                     : 5;
+  uint8_t fsm_wr_ctrl_status            : 1;
+  uint8_t not_used0                     : 2;
+#endif /* DRV_BYTE_ORDER */
+} lsm6dsv16b_ctrl_status_t;
 
 #define LSM6DSV16B_FIFO_STATUS1                  0x1BU
 typedef struct
@@ -1048,7 +1068,7 @@ typedef struct
   uint8_t tap_y_en                      : 1;
   uint8_t tap_z_en                      : 1;
   uint8_t slope_fds                     : 1;
-  uint8_t not_used0                     : 1;
+  uint8_t hw_func_mask_xl_settl         : 1;
   uint8_t low_pass_on_6d                : 1;
   uint8_t not_used1                     : 1;
 #elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
@@ -1537,7 +1557,7 @@ typedef struct
   uint8_t int2_sig_mot                  : 1;
   uint8_t int2_tilt                     : 1;
   uint8_t int2_step_detector            : 1;
-  uint8_t not_used0                     : 3;/
+  uint8_t not_used0                     : 3;
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_emb_func_int2_t;
 
@@ -1690,6 +1710,16 @@ typedef struct
   uint8_t fsm_lc                        : 8;
 #endif /* DRV_BYTE_ORDER */
 } lsm6dsv16b_fsm_long_counter_h_t;
+
+#define LSM6DSV16B_INT_ACK_MASK                  0x4BU
+typedef struct
+{
+#if DRV_BYTE_ORDER == DRV_LITTLE_ENDIAN
+  uint8_t iack_mask                     : 8;
+#elif DRV_BYTE_ORDER == DRV_BIG_ENDIAN
+  uint8_t iack_mask                     : 8;
+#endif /* DRV_BYTE_ORDER */
+} lsm6dsv16b_int_ack_mask_t;
 
 #define LSM6DSV16B_FSM_OUTS1                     0x4CU
 typedef struct
@@ -3214,6 +3244,14 @@ int32_t lsm6dsv16b_tilt_mode_get(stmdev_ctx_t *ctx, uint8_t *val);
 int32_t lsm6dsv16b_sflp_game_rotation_set(stmdev_ctx_t *ctx, uint16_t val);
 int32_t lsm6dsv16b_sflp_game_rotation_get(stmdev_ctx_t *ctx, uint16_t *val);
 
+typedef struct
+{
+  float_t gbias_x; /* dps */
+  float_t gbias_y; /* dps */
+  float_t gbias_z; /* dps */
+} lsm6dsv16b_sflp_gbias_t;
+int32_t lsm6dsv16b_sflp_game_gbias_set(stmdev_ctx_t *ctx,
+                                       lsm6dsv16b_sflp_gbias_t *val);
 
 int32_t lsm6dsv16b_sflp_configure(stmdev_ctx_t *ctx);
 
@@ -3240,6 +3278,7 @@ int32_t lsm6dsv16b_fsm_permission_set(stmdev_ctx_t *ctx,
                                        lsm6dsv16b_fsm_permission_t val);
 int32_t lsm6dsv16b_fsm_permission_get(stmdev_ctx_t *ctx,
                                        lsm6dsv16b_fsm_permission_t *val);
+int32_t lsm6dsv16b_fsm_permission_status(stmdev_ctx_t *ctx, uint8_t *val);
 
 typedef enum
 {
@@ -3336,10 +3375,8 @@ int32_t lsm6dsv16b_tdm_tdmout_pull_up_get(stmdev_ctx_t *ctx, uint8_t *val);
 
 typedef enum
 {
-  LSM6DSV16B_WCLK_8kHZ_BCLK_1024kHz              = 0x0,
   LSM6DSV16B_WCLK_16kHZ_BCLK_2048kHz             = 0x1,
   LSM6DSV16B_WCLK_8kHZ_BCLK_2048kHz              = 0x4,
-  LSM6DSV16B_WCLK_16kHZ_BCLK_1024kHz             = 0x5,
 } lsm6dsv16b_tdm_wclk_bclk_t;
 int32_t lsm6dsv16b_tdm_wclk_bclk_set(stmdev_ctx_t *ctx,
                                       lsm6dsv16b_tdm_wclk_bclk_t val);

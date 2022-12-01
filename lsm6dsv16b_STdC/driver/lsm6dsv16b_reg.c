@@ -2295,6 +2295,50 @@ int32_t lsm6dsv16b_filt_wkup_act_feed_get(stmdev_ctx_t *ctx,
 }
 
 /**
+  * @brief  Mask hw function triggers when xl is settling.[set]
+  *
+  * @param  ctx      read / write interface definitions
+  * @param  val      0 or 1,
+  * @retval          interface status (MANDATORY: return 0 -> no Error)
+  *
+  */
+int32_t lsm6dsv16b_mask_trigger_xl_settl_set(stmdev_ctx_t *ctx, uint8_t val)
+{
+  lsm6dsv16b_tap_cfg0_t tap_cfg0;
+  int32_t ret;
+
+  ret = lsm6dsv16b_read_reg(ctx, LSM6DSV16B_TAP_CFG0, (uint8_t *)&tap_cfg0, 1);
+
+  if (ret == 0)
+  {
+    tap_cfg0.hw_func_mask_xl_settl = val & 0x01U;
+    ret = lsm6dsv16b_write_reg(ctx, LSM6DSV16B_TAP_CFG0, (uint8_t *)&tap_cfg0, 1);
+  }
+
+  return ret;
+}
+
+/**
+  * @brief  Mask hw function triggers when xl is settling.[get]
+  *
+  * @param  ctx      read / write interface definitions
+  * @param  val      0 or 1,
+  * @retval          interface status (MANDATORY: return 0 -> no Error)
+  *
+  */
+int32_t lsm6dsv16b_mask_trigger_xl_settl_get(stmdev_ctx_t *ctx, uint8_t *val)
+{
+  lsm6dsv16b_tap_cfg0_t tap_cfg0;
+  int32_t ret;
+
+  ret = lsm6dsv16b_read_reg(ctx, LSM6DSV16B_TAP_CFG0, (uint8_t *)&tap_cfg0, 1);
+  *val = tap_cfg0.hw_func_mask_xl_settl;
+
+  return ret;
+}
+
+
+/**
   * @brief  LPF2 filter on 6D (sixd) function selection.[set]
   *
   * @param  ctx      read / write interface definitions
@@ -5593,76 +5637,6 @@ int32_t lsm6dsv16b_fifo_stpcnt_batch_get(stmdev_ctx_t *ctx, uint8_t *val)
   */
 
 /**
-  * @defgroup  Data ENable (DEN) functionality
-  * @brief     This section groups all the functions concerning
-  *            DEN functionality.
-  * @{
-  *
-  */
-
-/**
-  * @brief  It changes the polarity of INT2 pin input trigger for data enable (DEN) or embedded functions.[set]
-  *
-  * @param  ctx      read / write interface definitions
-  * @param  val      DEN_ACT_LOW, DEN_ACT_HIGH,
-  * @retval          interface status (MANDATORY: return 0 -> no Error)
-  *
-  */
-int32_t lsm6dsv16b_den_polarity_set(stmdev_ctx_t *ctx,
-                                     lsm6dsv16b_den_polarity_t val)
-{
-  lsm6dsv16b_ctrl4_t ctrl4;
-  int32_t ret;
-
-  ret = lsm6dsv16b_read_reg(ctx, LSM6DSV16B_CTRL4, (uint8_t *)&ctrl4, 1);
-
-  if (ret == 0)
-  {
-    ctrl4.int2_in_lh = (uint8_t)val & 0x1U;
-    ret = lsm6dsv16b_write_reg(ctx, LSM6DSV16B_CTRL4, (uint8_t *)&ctrl4, 1);
-  }
-
-  return ret;
-}
-
-/**
-  * @brief  It changes the polarity of INT2 pin input trigger for data enable (DEN) or embedded functions.[get]
-  *
-  * @param  ctx      read / write interface definitions
-  * @param  val      DEN_ACT_LOW, DEN_ACT_HIGH,
-  * @retval          interface status (MANDATORY: return 0 -> no Error)
-  *
-  */
-int32_t lsm6dsv16b_den_polarity_get(stmdev_ctx_t *ctx,
-                                     lsm6dsv16b_den_polarity_t *val)
-{
-  lsm6dsv16b_ctrl4_t ctrl4;
-  int32_t ret;
-
-  ret = lsm6dsv16b_read_reg(ctx, LSM6DSV16B_CTRL4, (uint8_t *)&ctrl4, 1);
-  switch (ctrl4.int2_in_lh)
-  {
-    case LSM6DSV16B_DEN_ACT_LOW:
-      *val = LSM6DSV16B_DEN_ACT_LOW;
-      break;
-
-    case LSM6DSV16B_DEN_ACT_HIGH:
-      *val = LSM6DSV16B_DEN_ACT_HIGH;
-      break;
-
-    default:
-      *val = LSM6DSV16B_DEN_ACT_LOW;
-      break;
-  }
-  return ret;
-}
-
-/**
-  * @}
-  *
-  */
-
-/**
   * @defgroup  Step Counter
   * @brief     This section groups all the functions that manage pedometer.
   * @{
@@ -6214,6 +6188,318 @@ int32_t lsm6dsv16b_sflp_data_rate_get(stmdev_ctx_t *ctx,
   return ret;
 }
 
+/*
+ * Original conversion routines taken from: https://github.com/numpy/numpy
+ *
+ * uint16_t npy_floatbits_to_halfbits(uint32_t f);
+ * uint16_t npy_float_to_half(float_t f);
+ *
+ * Released under BSD-3-Clause License
+ */
+static uint16_t npy_floatbits_to_halfbits(uint32_t f)
+{
+  uint32_t f_exp, f_sig;
+  uint16_t h_sgn, h_exp, h_sig;
+
+  h_sgn = (uint16_t)((f & 0x80000000u) >> 16);
+  f_exp = (f & 0x7f800000u);
+
+  /* Exponent overflow/NaN converts to signed inf/NaN */
+  if (f_exp >= 0x47800000u)
+  {
+    if (f_exp == 0x7f800000u)
+    {
+      /* Inf or NaN */
+      f_sig = (f & 0x007fffffu);
+      if (f_sig != 0)
+      {
+        /* NaN - propagate the flag in the significand... */
+        uint16_t ret = (uint16_t)(0x7c00u + (f_sig >> 13));
+        /* ...but make sure it stays a NaN */
+        if (ret == 0x7c00u)
+        {
+          ret++;
+        }
+        return h_sgn + ret;
+      }
+      else
+      {
+        /* signed inf */
+        return (uint16_t)(h_sgn + 0x7c00u);
+      }
+    }
+    else
+    {
+      /* overflow to signed inf */
+#if NPY_HALF_GENERATE_OVERFLOW
+      npy_set_floatstatus_overflow();
+#endif
+      return (uint16_t)(h_sgn + 0x7c00u);
+    }
+  }
+
+  /* Exponent underflow converts to a subnormal half or signed zero */
+  if (f_exp <= 0x38000000u)
+  {
+    /*
+     * Signed zeros, subnormal floats, and floats with small
+     * exponents all convert to signed zero half-floats.
+     */
+    if (f_exp < 0x33000000u)
+    {
+#if NPY_HALF_GENERATE_UNDERFLOW
+      /* If f != 0, it underflowed to 0 */
+      if ((f & 0x7fffffff) != 0)
+      {
+        npy_set_floatstatus_underflow();
+      }
+#endif
+      return h_sgn;
+    }
+    /* Make the subnormal significand */
+    f_exp >>= 23;
+    f_sig = (0x00800000u + (f & 0x007fffffu));
+#if NPY_HALF_GENERATE_UNDERFLOW
+    /* If it's not exactly represented, it underflowed */
+    if ((f_sig & (((uint32_t)1 << (126 - f_exp)) - 1)) != 0)
+    {
+      npy_set_floatstatus_underflow();
+    }
+#endif
+    /*
+     * Usually the significand is shifted by 13. For subnormals an
+     * additional shift needs to occur. This shift is one for the largest
+     * exponent giving a subnormal `f_exp = 0x38000000 >> 23 = 112`, which
+     * offsets the new first bit. At most the shift can be 1+10 bits.
+     */
+    f_sig >>= (113 - f_exp);
+    /* Handle rounding by adding 1 to the bit beyond half precision */
+#if NPY_HALF_ROUND_TIES_TO_EVEN
+    /*
+     * If the last bit in the half significand is 0 (already even), and
+     * the remaining bit pattern is 1000...0, then we do not add one
+     * to the bit after the half significand. However, the (113 - f_exp)
+     * shift can lose up to 11 bits, so the || checks them in the original.
+     * In all other cases, we can just add one.
+     */
+    if (((f_sig & 0x00003fffu) != 0x00001000u) || (f & 0x000007ffu))
+    {
+      f_sig += 0x00001000u;
+    }
+#else
+    f_sig += 0x00001000u;
+#endif
+    h_sig = (uint16_t)(f_sig >> 13);
+    /*
+     * If the rounding causes a bit to spill into h_exp, it will
+     * increment h_exp from zero to one and h_sig will be zero.
+     * This is the correct result.
+     */
+    return (uint16_t)(h_sgn + h_sig);
+  }
+
+  /* Regular case with no overflow or underflow */
+  h_exp = (uint16_t)((f_exp - 0x38000000u) >> 13);
+  /* Handle rounding by adding 1 to the bit beyond half precision */
+  f_sig = (f & 0x007fffffu);
+#if NPY_HALF_ROUND_TIES_TO_EVEN
+  /*
+   * If the last bit in the half significand is 0 (already even), and
+   * the remaining bit pattern is 1000...0, then we do not add one
+   * to the bit after the half significand.  In all other cases, we do.
+   */
+  if ((f_sig & 0x00003fffu) != 0x00001000u)
+  {
+    f_sig += 0x00001000u;
+  }
+#else
+  f_sig += 0x00001000u;
+#endif
+  h_sig = (uint16_t)(f_sig >> 13);
+  /*
+   * If the rounding causes a bit to spill into h_exp, it will
+   * increment h_exp by one and h_sig will be zero.  This is the
+   * correct result.  h_exp may increment to 15, at greatest, in
+   * which case the result overflows to a signed inf.
+   */
+#if NPY_HALF_GENERATE_OVERFLOW
+  h_sig += h_exp;
+  if (h_sig == 0x7c00u)
+  {
+    npy_set_floatstatus_overflow();
+  }
+  return h_sgn + h_sig;
+#else
+  return h_sgn + h_exp + h_sig;
+#endif
+}
+
+static uint16_t npy_float_to_half(float_t f)
+{
+  union
+  {
+    float_t f;
+    uint32_t fbits;
+  } conv;
+  conv.f = f;
+  return npy_floatbits_to_halfbits(conv.fbits);
+}
+
+/**
+  * @brief  SFLP GBIAS value. The register value is expressed as half-precision
+  *         floating-point format: SEEEEEFFFFFFFFFF (S: 1 sign bit; E: 5 exponent
+  *          bits; F: 10 fraction bits).[set]
+  *
+  * @param  ctx      read / write interface definitions
+  * @param  val      GBIAS x/y/z val.
+  * @retval          interface status (MANDATORY: return 0 -> no Error)
+  *
+  */
+int32_t lsm6dsv16b_sflp_game_gbias_set(stmdev_ctx_t *ctx,
+                                       lsm6dsv16b_sflp_gbias_t *val)
+{
+  lsm6dsv16b_sflp_data_rate_t sflp_odr;
+  lsm6dsv16b_emb_func_exec_status_t emb_func_sts;
+  lsm6dsv16b_data_ready_t drdy;
+  lsm6dsv16b_xl_full_scale_t xl_fs;
+  lsm6dsv16b_ctrl10_t ctrl10;
+  uint8_t master_config;
+  uint8_t emb_func_en_saved[2];
+  uint8_t conf_saved[2];
+  uint8_t reg_zero[2] = {0x0, 0x0};
+  uint16_t gbias_hf[3];
+  float_t k = 0.005f;
+  int16_t xl_data[3];
+  int32_t data_tmp;
+  uint8_t *data_ptr = (uint8_t *)&data_tmp;
+  uint8_t i, j;
+  int32_t ret;
+
+  ret = lsm6dsv16b_sflp_data_rate_get(ctx, &sflp_odr);
+  if (ret != 0)
+  {
+    return ret;
+  }
+
+  /* Calculate k factor */
+  switch (sflp_odr)
+  {
+    case LSM6DSV16B_SFLP_15Hz:
+      k = 0.04f;
+      break;
+    case LSM6DSV16B_SFLP_30Hz:
+      k = 0.02f;
+      break;
+    case LSM6DSV16B_SFLP_60Hz:
+      k = 0.01f;
+      break;
+    case LSM6DSV16B_SFLP_120Hz:
+      k = 0.005f;
+      break;
+    case LSM6DSV16B_SFLP_240Hz:
+      k = 0.0025f;
+      break;
+    case LSM6DSV16B_SFLP_480Hz:
+      k = 0.00125f;
+      break;
+  }
+
+  /* compute gbias as half precision float in order to be put in embedded advanced feature register */
+  gbias_hf[0] = npy_float_to_half(val->gbias_x * (3.14159265358979323846f / 180.0f) / k);
+  gbias_hf[1] = npy_float_to_half(val->gbias_y * (3.14159265358979323846f / 180.0f) / k);
+  gbias_hf[2] = npy_float_to_half(val->gbias_z * (3.14159265358979323846f / 180.0f) / k);
+
+  /* Save sensor configuration and set high-performance mode (if the sensor is in power-down mode, turn it on) */
+  ret += lsm6dsv16b_read_reg(ctx, LSM6DSV16B_CTRL1, conf_saved, 2);
+  ret += lsm6dsv16b_xl_mode_set(ctx, LSM6DSV16B_XL_HIGH_PERFORMANCE_MD);
+  ret += lsm6dsv16b_gy_mode_set(ctx, LSM6DSV16B_GY_HIGH_PERFORMANCE_MD);
+  if ((conf_saved[0] & 0x0FU) == LSM6DSV16B_XL_ODR_OFF)
+  {
+    ret += lsm6dsv16b_xl_data_rate_set(ctx, LSM6DSV16B_XL_ODR_AT_120Hz);
+  }
+
+  /* disable algos */
+  ret += lsm6dsv16b_mem_bank_set(ctx, LSM6DSV16B_EMBED_FUNC_MEM_BANK);
+  ret += lsm6dsv16b_read_reg(ctx, LSM6DSV16B_EMB_FUNC_EN_A, emb_func_en_saved,
+                              2);
+  ret += lsm6dsv16b_write_reg(ctx, LSM6DSV16B_EMB_FUNC_EN_A, reg_zero, 2);
+  do
+  {
+    ret += lsm6dsv16b_read_reg(ctx, LSM6DSV16B_EMB_FUNC_EXEC_STATUS,
+                                (uint8_t *)&emb_func_sts, 1);
+  } while (emb_func_sts.emb_func_endop != 1);
+  ret += lsm6dsv16b_mem_bank_set(ctx, LSM6DSV16B_MAIN_MEM_BANK);
+
+  // enable gbias setting
+  ret += lsm6dsv16b_read_reg(ctx, LSM6DSV16B_CTRL10, (uint8_t *)&ctrl10, 1);
+  ctrl10.emb_func_debug = 1;
+  ret += lsm6dsv16b_write_reg(ctx, LSM6DSV16B_CTRL10, (uint8_t *)&ctrl10, 1);
+
+  /* enable algos */
+  ret += lsm6dsv16b_mem_bank_set(ctx, LSM6DSV16B_EMBED_FUNC_MEM_BANK);
+  emb_func_en_saved[0] |= 0x02; /* force SFLP GAME en */
+  ret += lsm6dsv16b_write_reg(ctx, LSM6DSV16B_EMB_FUNC_EN_A, emb_func_en_saved,
+                               2);
+  ret += lsm6dsv16b_mem_bank_set(ctx, LSM6DSV16B_MAIN_MEM_BANK);
+
+  ret += lsm6dsv16b_xl_full_scale_get(ctx, &xl_fs);
+
+  /* Read XL data */
+  do
+  {
+    ret += lsm6dsv16b_flag_data_ready_get(ctx, &drdy);
+  } while (drdy.drdy_xl != 1);
+  ret += lsm6dsv16b_acceleration_raw_get(ctx, xl_data);
+
+  /* force sflp initialization */
+  master_config = 0x40;
+  ret += lsm6dsv16b_write_reg(ctx, LSM6DSV16B_FUNC_CFG_ACCESS, &master_config,
+                               1);
+  for (i = 0; i < 3; i++)
+  {
+    j = 0;
+    data_tmp = (int32_t)xl_data[i];
+    data_tmp <<= xl_fs; // shift based on current fs
+    ret += lsm6dsv16b_write_reg(ctx, 0x02 + 3 * i, &data_ptr[j++], 1);
+    ret += lsm6dsv16b_write_reg(ctx, 0x03 + 3 * i, &data_ptr[j++], 1);
+    ret += lsm6dsv16b_write_reg(ctx, 0x04 + 3 * i, &data_ptr[j], 1);
+  }
+  for (i = 0; i < 3; i++)
+  {
+    j = 0;
+    data_tmp = 0;
+    ret += lsm6dsv16b_write_reg(ctx, 0x0B + 3 * i, &data_ptr[j++], 1);
+    ret += lsm6dsv16b_write_reg(ctx, 0x0C + 3 * i, &data_ptr[j++], 1);
+    ret += lsm6dsv16b_write_reg(ctx, 0x0D + 3 * i, &data_ptr[j], 1);
+  }
+  master_config = 0x00;
+  ret += lsm6dsv16b_write_reg(ctx, LSM6DSV16B_FUNC_CFG_ACCESS, &master_config,
+                               1);
+
+  // wait end_op (and at least 30 us)
+  ctx->mdelay(1);
+  ret += lsm6dsv16b_mem_bank_set(ctx, LSM6DSV16B_EMBED_FUNC_MEM_BANK);
+  do
+  {
+    ret += lsm6dsv16b_read_reg(ctx, LSM6DSV16B_EMB_FUNC_EXEC_STATUS,
+                                (uint8_t *)&emb_func_sts, 1);
+  } while (emb_func_sts.emb_func_endop != 1);
+  ret += lsm6dsv16b_mem_bank_set(ctx, LSM6DSV16B_MAIN_MEM_BANK);
+
+  /* write gbias in embedded advanced features registers */
+  ret += lsm6dsv16b_ln_pg_write(ctx, LSM6DSV16B_SFLP_GAME_GBIASX_L,
+                                 (uint8_t *)gbias_hf, 6);
+
+  /* reload previous sensor configuration */
+  ret += lsm6dsv16b_write_reg(ctx, LSM6DSV16B_CTRL1, conf_saved, 2);
+
+  // disable gbias setting
+  ctrl10.emb_func_debug = 0;
+  ret += lsm6dsv16b_write_reg(ctx, LSM6DSV16B_CTRL10, (uint8_t *)&ctrl10, 1);
+
+  return ret;
+}
+
 /**
   * @brief  SFLP initial configuration [set]
   *
@@ -6269,6 +6555,26 @@ int32_t lsm6dsv16b_fsm_permission_set(stmdev_ctx_t *ctx,
 }
 
 /**
+  * @brief  Return the status of the CTRL registers permission (standard interface vs FSM).[get]
+  *
+  * @param  ctx      read / write interface definitions
+  * @param  val      0: all FSM regs are under std_if control, 1: some regs are under FSM control.
+  * @retval          interface status (MANDATORY: return 0 -> no Error)
+  *
+  */
+int32_t lsm6dsv16b_fsm_permission_status_get(stmdev_ctx_t *ctx,
+                                              lsm6dsv16b_fsm_permission_status_t *val)
+{
+  lsm6dsv16b_ctrl_status_t status;
+  int32_t ret;
+
+  ret = lsm6dsv16b_read_reg(ctx, LSM6DSV16B_CTRL_STATUS, (uint8_t *)&status, 1);
+  *val = (status.fsm_wr_ctrl_status == 0) ? LSM6DSV16B_STD_IF_CONTROL : LSM6DSV16B_FSM_CONTROL;
+
+  return ret;
+}
+
+/**
   * @brief  Enables the control of the CTRL registers to FSM (FSM can change some configurations of the device autonomously).[get]
   *
   * @param  ctx      read / write interface definitions
@@ -6297,6 +6603,26 @@ int32_t lsm6dsv16b_fsm_permission_get(stmdev_ctx_t *ctx,
       *val = LSM6DSV16B_PROTECT_CTRL_REGS;
       break;
   }
+  return ret;
+}
+
+/**
+  * @brief  Get the FSM permission status
+  *
+  * @param  ctx      read / write interface definitions
+  * @param  val      0: All reg writable from std if - 1: some regs are under FSM control.
+  * @retval          interface status (MANDATORY: return 0 -> no Error)
+  *
+  */
+int32_t lsm6dsv16b_fsm_permission_status(stmdev_ctx_t *ctx, uint8_t *val)
+{
+  lsm6dsv16b_ctrl_status_t ctrl_status;
+  int32_t ret;
+
+  ret = lsm6dsv16b_read_reg(ctx, LSM6DSV16B_CTRL_STATUS, (uint8_t *)&ctrl_status, 1);
+
+  *val = ctrl_status.fsm_wr_ctrl_status;
+
   return ret;
 }
 
@@ -7091,20 +7417,12 @@ int32_t lsm6dsv16b_tdm_wclk_bclk_get(stmdev_ctx_t *ctx,
   ret = lsm6dsv16b_read_reg(ctx, LSM6DSV16B_TDM_CFG0, (uint8_t *)&tdm_cfg0, 1);
   switch ((tdm_cfg0.tdm_wclk_bclk_sel << 2) + tdm_cfg0.tdm_wclk)
   {
-    case LSM6DSV16B_WCLK_8kHZ_BCLK_1024kHz:
-      *val = LSM6DSV16B_WCLK_8kHZ_BCLK_1024kHz;
-      break;
-
     case LSM6DSV16B_WCLK_16kHZ_BCLK_2048kHz:
       *val = LSM6DSV16B_WCLK_16kHZ_BCLK_2048kHz;
       break;
 
     case LSM6DSV16B_WCLK_8kHZ_BCLK_2048kHz:
       *val = LSM6DSV16B_WCLK_8kHZ_BCLK_2048kHz;
-      break;
-
-    case LSM6DSV16B_WCLK_16kHZ_BCLK_1024kHz:
-      *val = LSM6DSV16B_WCLK_16kHZ_BCLK_1024kHz;
       break;
 
     default:
