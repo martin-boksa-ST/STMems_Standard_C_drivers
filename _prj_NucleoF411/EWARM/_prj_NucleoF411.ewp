@@ -350,6 +350,9 @@
                     <state>C:\Users\visconta\Projects\STdC\_resources\STMems_Finite_State_Machine\application_examples\lsm6dsv16x\FourD position recognition</state>
                     <state>C:\Users\visconta\Projects\STdC\_resources\STMems_Machine_Learning_Core\application_examples\lsm6dsv16x\gym_activity_recognition</state>
                     <state>C:\Users\visconta\Projects\STdC\lsm6dsv16b_STdC\driver</state>
+                    <state>C:\Users\visconta\Projects\STdC\_resources\STMems_Machine_Learning_Core\application_examples\lsm6dsv16bx\activity_recognition_for_wrist</state>
+                    <state>C:\Users\visconta\Projects\STdC\_resources\STMems_Finite_State_Machine\application_examples\lsm6dsv16bx\Glance detection</state>
+                    <state>C:\Users\visconta\Projects\STdC\_resources\STMems_Finite_State_Machine\application_examples\lsm6dsv16bx\FourD position recognition</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1174,6 +1177,15 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\lsm6dsv16bx_STdC\examples\lsm6dsv16bx_fifo.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\lsm6dsv16bx_STdC\examples\lsm6dsv16bx_fsm_fourd.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\lsm6dsv16bx_STdC\examples\lsm6dsv16bx_fsm_glance.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\lsm6dsv16bx_STdC\examples\lsm6dsv16bx_mlc_activity.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\lsm6dsv16bx_STdC\examples\lsm6dsv16bx_pedometer.c</name>

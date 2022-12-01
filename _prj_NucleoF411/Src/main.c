@@ -81,6 +81,9 @@ void lsm6dsv16bx_self_test(void);
 void lsm6dsv16bx_tdm_conf(void);
 void lsm6dsv16bx_wake_up(void);
 void lsm6dsv16bx_sensor_fusion(void);
+void lsm6dsv16bx_mlc_activity(void);
+void lsm6dsv16bx_fsm_glance(void);
+void lsm6dsv16bx_fsm_fourd(void);
 
 void lsm6dsv32x_read_data_polling(void);
 void lsm6dsv32x_fifo(void);
@@ -98,6 +101,9 @@ void lsm6dsv16x_single_double_tap_handler(void);
 void lsm6dsv16x_fsm_glance_handler(void);
 void lsm6dsv16x_fsm_fourd_handler(void);
 void lsm6dsv16x_mlc_gym_handler(void);
+void lsm6dsv16bx_mlc_activity_handler(void);
+void lsm6dsv16bx_fsm_glance_handler(void);
+void lsm6dsv16bx_fsm_fourd_handler(void);
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
@@ -109,7 +115,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   //lsm6dsv16x_single_double_tap_handler();
   //lsm6dsv16x_fsm_glance_handler();
   //lsm6dsv16x_fsm_fourd_handler();
-  lsm6dsv16x_mlc_gym_handler();
+  //lsm6dsv16x_mlc_gym_handler();
+  //lsm6dsv16bx_mlc_activity_handler();
+  //lsm6dsv16bx_fsm_glance_handler();
+  lsm6dsv16bx_fsm_fourd_handler();
 }
 
 /* USER CODE END 0 */
@@ -155,7 +164,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    lsm6dsv16b_read_data_polling();
+    //lsm6dsv16b_read_data_polling();
 
     //lsm6dsv16x_read_data_polling();
     //lsm6dsv16x_read_data_irq();
@@ -181,11 +190,14 @@ int main(void)
     //lsm6dsv16bx_tdm_conf();
     //lsm6dsv16bx_wake_up();
     //lsm6dsv16bx_sensor_fusion();
+    //lsm6dsv16bx_mlc_activity();
+    //lsm6dsv16bx_fsm_glance();
+    lsm6dsv16bx_fsm_fourd();
 
     //lsm6dsv32x_read_data_polling();
     //lsm6dsv32x_fifo();
     //lsm6dsv32x_self_test();
-    lsm6dsv32x_sensor_fusion();
+    //lsm6dsv32x_sensor_fusion();
 
     /* USER CODE END WHILE */
 
