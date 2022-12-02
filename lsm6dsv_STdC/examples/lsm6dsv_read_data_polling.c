@@ -22,9 +22,9 @@
  * This example was developed using the following STMicroelectronics
  * evaluation boards:
  *
- * - STEVAL_MKI109V3 + 
- * - NUCLEO_F411RE + 
- * - DISCOVERY_SPC584B + 
+ * - STEVAL_MKI109V3 +
+ * - NUCLEO_F411RE +
+ * - DISCOVERY_SPC584B +
  *
  * Used interfaces:
  *
@@ -161,8 +161,8 @@ void lsm6dsv_read_data_polling(void)
    * Selected data rate have to be equal or greater with respect
    * with MLC data rate.
    */
-  lsm6dsv_xl_data_rate_set(&dev_ctx, LSM6DSV_XL_ODR_AT_7Hz5);
-  lsm6dsv_gy_data_rate_set(&dev_ctx, LSM6DSV_GY_ODR_AT_15Hz);
+  lsm6dsv_xl_data_rate_set(&dev_ctx, LSM6DSV_ODR_AT_7Hz5);
+  lsm6dsv_gy_data_rate_set(&dev_ctx, LSM6DSV_ODR_AT_15Hz);
   /* Set full scale */
   lsm6dsv_xl_full_scale_set(&dev_ctx, LSM6DSV_2g);
   lsm6dsv_gy_full_scale_set(&dev_ctx, LSM6DSV_2000dps);

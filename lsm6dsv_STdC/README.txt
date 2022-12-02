@@ -14,4 +14,4 @@ every hardware.
 
 www.st.com/mems
 
-LSM6DSV DS DRAFT rev0.8
+LSM6DSV DS rev2.0
