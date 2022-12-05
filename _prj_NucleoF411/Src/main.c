@@ -92,6 +92,8 @@ void lsm6dsv32x_sensor_fusion(void);
 
 void lsm6dsv16b_read_data_polling(void);
 
+void lsm6dsv_read_data_polling(void);
+
 void lsm6dsv16x_read_data_irq_handler(void);
 void lsm6dsv16x_fifo_irq_handler(void);
 void lsm6dsv16x_free_fall_handler(void);
@@ -164,6 +166,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    lsm6dsv_read_data_polling();
+
     //lsm6dsv16b_read_data_polling();
 
     //lsm6dsv16x_read_data_polling();
@@ -192,7 +196,7 @@ int main(void)
     //lsm6dsv16bx_sensor_fusion();
     //lsm6dsv16bx_mlc_activity();
     //lsm6dsv16bx_fsm_glance();
-    lsm6dsv16bx_fsm_fourd();
+    //lsm6dsv16bx_fsm_fourd();
 
     //lsm6dsv32x_read_data_polling();
     //lsm6dsv32x_fifo();
