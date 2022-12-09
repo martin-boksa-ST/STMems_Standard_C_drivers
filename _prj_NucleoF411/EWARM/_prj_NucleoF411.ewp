@@ -1165,6 +1165,15 @@
     <group>
         <name>lsm6dsv</name>
         <file>
+            <name>$PROJ_DIR$\..\..\lsm6dsv_STdC\examples\lsm6dsv16x_read_data_irq.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\lsm6dsv_STdC\examples\lsm6dsv_fifo.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\lsm6dsv_STdC\examples\lsm6dsv_free_fall.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\lsm6dsv_STdC\examples\lsm6dsv_read_data_polling.c</name>
         </file>
         <file>
@@ -1172,6 +1181,15 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\lsm6dsv_STdC\examples\lsm6dsv_self_test.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\lsm6dsv_STdC\examples\lsm6dsv_single_double_tap.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\lsm6dsv_STdC\examples\lsm6dsv_six_d_position.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\lsm6dsv_STdC\examples\lsm6dsv_wakeup.c</name>
         </file>
     </group>
     <group>

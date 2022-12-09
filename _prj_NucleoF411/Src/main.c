@@ -93,6 +93,13 @@ void lsm6dsv32x_sensor_fusion(void);
 void lsm6dsv16b_read_data_polling(void);
 
 void lsm6dsv_read_data_polling(void);
+void lsm6dsv_self_test(void);
+void lsm6dsv_read_data_drdy(void);
+void lsm6dsv_fifo_irq(void);
+void lsm6dsv_sixd(void);
+void lsm6dsv_single_double_tap(void);
+void lsm6dsv_free_fall(void);
+void lsm6dsv_wakeup(void);
 
 void lsm6dsv16x_read_data_irq_handler(void);
 void lsm6dsv16x_fifo_irq_handler(void);
@@ -106,6 +113,12 @@ void lsm6dsv16x_mlc_gym_handler(void);
 void lsm6dsv16bx_mlc_activity_handler(void);
 void lsm6dsv16bx_fsm_glance_handler(void);
 void lsm6dsv16bx_fsm_fourd_handler(void);
+void lsm6dsv_read_data_drdy_handler(void);
+void lsm6dsv_fifo_irq_handler(void);
+void lsm6dsv_sixd_handler(void);
+void lsm6dsv_single_double_tap_handler(void);
+void lsm6dsv_free_fall_handler(void);
+void lsm6dsv_wakeup_handler(void);
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
@@ -120,7 +133,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   //lsm6dsv16x_mlc_gym_handler();
   //lsm6dsv16bx_mlc_activity_handler();
   //lsm6dsv16bx_fsm_glance_handler();
-  lsm6dsv16bx_fsm_fourd_handler();
+  //lsm6dsv16bx_fsm_fourd_handler();
+  //lsm6dsv_read_data_drdy_handler();
+  //lsm6dsv_fifo_irq_handler();
+  //lsm6dsv_sixd_handler();
+  //lsm6dsv_single_double_tap_handler();
+  //lsm6dsv_free_fall_handler();
+  lsm6dsv_wakeup_handler();
 }
 
 /* USER CODE END 0 */
@@ -166,7 +185,14 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    lsm6dsv_read_data_polling();
+    //lsm6dsv_read_data_polling();
+    //lsm6dsv_self_test();
+    //lsm6dsv_read_data_drdy();
+    //lsm6dsv_fifo_irq();
+    //lsm6dsv_sixd();
+    //lsm6dsv_single_double_tap();
+    //lsm6dsv_free_fall();
+    lsm6dsv_wakeup();
 
     //lsm6dsv16b_read_data_polling();
 
