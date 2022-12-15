@@ -123,24 +123,14 @@ static int32_t platform_read(void *handle, uint8_t reg, uint8_t *bufp,
 static void tx_com( uint8_t *tx_buffer, uint16_t len );
 static void platform_delay(uint32_t ms);
 static void platform_init(void);
-static   stmdev_ctx_t dev_ctx;
+
+static stmdev_ctx_t dev_ctx;
+static uint8_t lps22df_drdy_event;
 
 /* Main Example --------------------------------------------------------------*/
 void lps22df_read_data_drdy_handler(void)
 {
-  lps22df_all_sources_t all_sources;
-
-  /* Read output only if new values are available */
-  lps22df_all_sources_get(&dev_ctx, &all_sources);
-  if ( all_sources.drdy_pres | all_sources.drdy_temp ) {
-    lps22df_data_get(&dev_ctx, &data);
-
-    sprintf((char*)tx_buffer,
-            "pressure [hPa]:%6.2f temperature [degC]:%6.2f\r\n",
-            data.pressure.hpa, data.heat.deg_c);
-
-    tx_com(tx_buffer, strlen((char const*)tx_buffer));
-  }
+  lps22df_drdy_event = 1;
 }
 
 void lps22df_read_data_drdy(void)
@@ -192,8 +182,26 @@ void lps22df_read_data_drdy(void)
   int_route.drdy_pres   = PROPERTY_ENABLE;
   lps22df_pin_int_route_set(&dev_ctx, &int_route);
 
-  /* Read samples in handler */
-  while(1);
+  /* Read samples on drdy event*/
+  while(1) {
+    if (lps22df_drdy_event) {
+      lps22df_all_sources_t all_sources;
+
+      lps22df_drdy_event = 0;
+
+      /* Read output only if new values are available */
+      lps22df_all_sources_get(&dev_ctx, &all_sources);
+      if (all_sources.drdy_pres == 1 || all_sources.drdy_temp == 1) {
+        lps22df_data_get(&dev_ctx, &data);
+
+        sprintf((char*)tx_buffer,
+                "pressure [hPa]:%6.2f temperature [degC]:%6.2f\r\n",
+                data.pressure.hpa, data.heat.deg_c);
+
+        tx_com(tx_buffer, strlen((char const*)tx_buffer));
+      }
+    }
+  }
 }
 
 /*

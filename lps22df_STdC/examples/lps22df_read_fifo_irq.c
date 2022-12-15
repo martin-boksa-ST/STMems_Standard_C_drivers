@@ -1,6 +1,6 @@
 /*
  ******************************************************************************
- * @file    read_fifo.c
+ * @file    read_fifo_irq.c
  * @author  Sensors Software Solution Team
  * @brief   This file show the simplest way to get data from sensor.
  *
@@ -124,32 +124,17 @@ static void tx_com( uint8_t *tx_buffer, uint16_t len );
 static void platform_delay(uint32_t ms);
 static void platform_init(void);
 
-static   stmdev_ctx_t dev_ctx;
+static stmdev_ctx_t dev_ctx;
+static uint8_t lps22df_fifo_wtm_event;
+
 
 /* Main Example --------------------------------------------------------------*/
-void lps22df_read_fifo_handler(void)
+void lps22df_read_fifo_irq_handler(void)
 {
-  lps22df_all_sources_t status;
-  uint8_t num, i;
-
-  lps22df_all_sources_get(&dev_ctx, &status);
-
-  if (status.fifo_th) {
-    lps22df_fifo_level_get(&dev_ctx, &num);
-
-    lps22df_fifo_data_get(&dev_ctx, num, data);
-
-    sprintf((char*)tx_buffer, "-- FIFO interrupt %d\r\n", num);
-    tx_com(tx_buffer, strlen((char const*)tx_buffer));
-
-    for (i = 0; i < num; i++) {
-      sprintf((char*)tx_buffer, "pressure [hPa]:%6.2f\r\n", data[i].hpa);
-      tx_com(tx_buffer, strlen((char const*)tx_buffer));
-   }
-  }
+  lps22df_fifo_wtm_event = 1;
 }
 
-void lps22df_read_fifo(void)
+void lps22df_read_fifo_irq(void)
 {
   lps22df_pin_int_route_t int_route;
   lps22df_bus_mode_t bus_mode;
@@ -189,7 +174,7 @@ void lps22df_read_fifo(void)
   lps22df_bus_mode_set(&dev_ctx, &bus_mode);
 
   /* Set Output Data Rate */
-  md.odr = LPS22DF_50Hz;
+  md.odr = LPS22DF_25Hz;
   md.avg = LPS22DF_16_AVG;
   md.lpf = LPS22DF_LPF_ODR_DIV_4;
   lps22df_mode_set(&dev_ctx, &md);
@@ -203,8 +188,34 @@ void lps22df_read_fifo(void)
   int_route.fifo_th   = PROPERTY_ENABLE;
   lps22df_pin_int_route_set(&dev_ctx, &int_route);
 
-  /* Read samples in handler */
-  while(1);
+  /* Read samples on FIFO wtm event*/
+  while(1) {
+    if (lps22df_fifo_wtm_event) {
+      lps22df_all_sources_t status;
+      uint8_t num, i;
+
+      lps22df_fifo_wtm_event = 0;
+
+      lps22df_all_sources_get(&dev_ctx, &status);
+
+      if (status.fifo_th) {
+        lps22df_fifo_level_get(&dev_ctx, &num);
+
+        lps22df_fifo_data_get(&dev_ctx, num, data);
+
+        sprintf((char*)tx_buffer, "-- FIFO interrupt %d\r\n", num);
+        tx_com(tx_buffer, strlen((char const*)tx_buffer));
+
+        for (i = 0; i < num; i++) {
+          sprintf((char*)tx_buffer, "pressure [hPa]:%6.2f\r\n", data[i].hpa);
+          tx_com(tx_buffer, strlen((char const*)tx_buffer));
+        }
+
+        sprintf((char*)tx_buffer, "-- \r\n\n");
+        tx_com(tx_buffer, strlen((char const*)tx_buffer));
+      }
+    }
+  }
 }
 
 /*
