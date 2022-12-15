@@ -58,20 +58,20 @@ static void MX_NVIC_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 void lps22df_read_data_drdy(void);
-void lps22df_read_fifo(void);
+void lps22df_read_fifo_irq(void);
 void lps22hh_read_data_drdy(void);
 void lps22hh_read_fifo_irq(void);
 
 void lps22df_read_data_drdy_handler(void);
-void lps22df_read_fifo_handler(void);
+void lps22df_read_fifo_irq_handler(void);
 void lps22hh_read_data_drdy_handler(void);
 void lps22hh_read_fifo_irq_handler(void);
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-  //lps22df_read_data_drdy_handler();
-  //lps22df_read_fifo_handler();
-  lps22hh_read_data_drdy_handler();
+  lps22df_read_data_drdy_handler();
+  //lps22df_read_fifo_irq_handler();
+  //lps22hh_read_data_drdy_handler();
   //lps22hh_read_fifo_irq_handler();
 }
 
@@ -118,10 +118,10 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    //lps22df_read_data_drdy();
-    //lps22df_read_fifo();
+    lps22df_read_data_drdy();
+    //lps22df_read_fifo_irq();
 
-    lps22hh_read_data_drdy();
+    //lps22hh_read_data_drdy();
     //lps22hh_read_fifo_irq();
 
     /* USER CODE END WHILE */
