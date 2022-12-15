@@ -57,89 +57,22 @@ static void MX_NVIC_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void lsm6dsv16x_read_data_polling(void);
-void lsm6dsv16x_read_data_irq(void);
-void lsm6dsv16x_self_test(void);
-void lsm6dsv16x_compressed_fifo(void);
-void lsm6dsv16x_fifo(void);
-void lsm6dsv16x_fifo_irq(void);
-void lsm6dsv16x_sensor_fusion(void);
-void lsm6dsv16x_qvar_read_data_polling(void);
-void lsm6dsv16x_free_fall(void);
-void lsm6dsv16x_wakeup(void);
-void lsm6dsv16x_sixd(void);
-void lsm6dsv16x_single_double_tap(void);
-void lsm6dsv16x_fsm_glance(void);
-void lsm6dsv16x_fsm_fourd(void);
-void lsm6dsv16x_mlc_gym(void);
+void lps22df_read_data_drdy(void);
+void lps22df_read_fifo(void);
+void lps22hh_read_data_drdy(void);
+void lps22hh_read_fifo_irq(void);
 
-void lsm6dsv16bx_read_data_polling(void);
-void lsm6dsv16bx_activity(void);
-void lsm6dsv16bx_fifo(void);
-void lsm6dsv16bx_pedometer(void);
-void lsm6dsv16bx_self_test(void);
-void lsm6dsv16bx_tdm_conf(void);
-void lsm6dsv16bx_wake_up(void);
-void lsm6dsv16bx_sensor_fusion(void);
-void lsm6dsv16bx_mlc_activity(void);
-void lsm6dsv16bx_fsm_glance(void);
-void lsm6dsv16bx_fsm_fourd(void);
-
-void lsm6dsv32x_read_data_polling(void);
-void lsm6dsv32x_fifo(void);
-void lsm6dsv32x_self_test(void);
-void lsm6dsv32x_sensor_fusion(void);
-
-void lsm6dsv16b_read_data_polling(void);
-
-void lsm6dsv_read_data_polling(void);
-void lsm6dsv_self_test(void);
-void lsm6dsv_read_data_drdy(void);
-void lsm6dsv_fifo_irq(void);
-void lsm6dsv_sixd(void);
-void lsm6dsv_single_double_tap(void);
-void lsm6dsv_free_fall(void);
-void lsm6dsv_wakeup(void);
-
-void lsm6dsv16x_read_data_irq_handler(void);
-void lsm6dsv16x_fifo_irq_handler(void);
-void lsm6dsv16x_free_fall_handler(void);
-void lsm6dsv16x_wakeup_handler(void);
-void lsm6dsv16x_sixd_handler(void);
-void lsm6dsv16x_single_double_tap_handler(void);
-void lsm6dsv16x_fsm_glance_handler(void);
-void lsm6dsv16x_fsm_fourd_handler(void);
-void lsm6dsv16x_mlc_gym_handler(void);
-void lsm6dsv16bx_mlc_activity_handler(void);
-void lsm6dsv16bx_fsm_glance_handler(void);
-void lsm6dsv16bx_fsm_fourd_handler(void);
-void lsm6dsv_read_data_drdy_handler(void);
-void lsm6dsv_fifo_irq_handler(void);
-void lsm6dsv_sixd_handler(void);
-void lsm6dsv_single_double_tap_handler(void);
-void lsm6dsv_free_fall_handler(void);
-void lsm6dsv_wakeup_handler(void);
+void lps22df_read_data_drdy_handler(void);
+void lps22df_read_fifo_handler(void);
+void lps22hh_read_data_drdy_handler(void);
+void lps22hh_read_fifo_irq_handler(void);
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-  //lsm6dsv16x_read_data_irq_handler();
-  //lsm6dsv16x_fifo_irq_handler();
-  //lsm6dsv16x_free_fall_handler();
-  //lsm6dsv16x_wakeup_handler();
-  //lsm6dsv16x_sixd_handler();
-  //lsm6dsv16x_single_double_tap_handler();
-  //lsm6dsv16x_fsm_glance_handler();
-  //lsm6dsv16x_fsm_fourd_handler();
-  //lsm6dsv16x_mlc_gym_handler();
-  //lsm6dsv16bx_mlc_activity_handler();
-  //lsm6dsv16bx_fsm_glance_handler();
-  //lsm6dsv16bx_fsm_fourd_handler();
-  //lsm6dsv_read_data_drdy_handler();
-  //lsm6dsv_fifo_irq_handler();
-  //lsm6dsv_sixd_handler();
-  //lsm6dsv_single_double_tap_handler();
-  //lsm6dsv_free_fall_handler();
-  lsm6dsv_wakeup_handler();
+  //lps22df_read_data_drdy_handler();
+  //lps22df_read_fifo_handler();
+  lps22hh_read_data_drdy_handler();
+  //lps22hh_read_fifo_irq_handler();
 }
 
 /* USER CODE END 0 */
@@ -185,49 +118,11 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    //lsm6dsv_read_data_polling();
-    //lsm6dsv_self_test();
-    //lsm6dsv_read_data_drdy();
-    //lsm6dsv_fifo_irq();
-    //lsm6dsv_sixd();
-    //lsm6dsv_single_double_tap();
-    //lsm6dsv_free_fall();
-    lsm6dsv_wakeup();
+    //lps22df_read_data_drdy();
+    //lps22df_read_fifo();
 
-    //lsm6dsv16b_read_data_polling();
-
-    //lsm6dsv16x_read_data_polling();
-    //lsm6dsv16x_read_data_irq();
-    //lsm6dsv16x_self_test();
-    //lsm6dsv16x_compressed_fifo();
-    //lsm6dsv16x_sensor_fusion();
-    //lsm6dsv16x_fifo();
-    //lsm6dsv16x_fifo_irq();
-    //lsm6dsv16x_qvar_read_data_polling();
-    //lsm6dsv16x_free_fall();
-    //lsm6dsv16x_wakeup();
-    //lsm6dsv16x_sixd();
-    //lsm6dsv16x_single_double_tap();
-    //lsm6dsv16x_fsm_glance();
-    //lsm6dsv16x_fsm_fourd();
-    //lsm6dsv16x_mlc_gym();
-
-    //lsm6dsv16bx_read_data_polling();
-    //lsm6dsv16bx_activity();
-    //lsm6dsv16bx_fifo();
-    //lsm6dsv16bx_pedometer();
-    //lsm6dsv16bx_self_test();
-    //lsm6dsv16bx_tdm_conf();
-    //lsm6dsv16bx_wake_up();
-    //lsm6dsv16bx_sensor_fusion();
-    //lsm6dsv16bx_mlc_activity();
-    //lsm6dsv16bx_fsm_glance();
-    //lsm6dsv16bx_fsm_fourd();
-
-    //lsm6dsv32x_read_data_polling();
-    //lsm6dsv32x_fifo();
-    //lsm6dsv32x_self_test();
-    //lsm6dsv32x_sensor_fusion();
+    lps22hh_read_data_drdy();
+    //lps22hh_read_fifo_irq();
 
     /* USER CODE END WHILE */
 

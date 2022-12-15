@@ -354,6 +354,8 @@
                     <state>C:\Users\visconta\Projects\STdC\_resources\STMems_Finite_State_Machine\application_examples\lsm6dsv16bx\Glance detection</state>
                     <state>C:\Users\visconta\Projects\STdC\_resources\STMems_Finite_State_Machine\application_examples\lsm6dsv16bx\FourD position recognition</state>
                     <state>C:\Users\visconta\Projects\STdC\lsm6dsv_STdC\driver</state>
+                    <state>C:\Users\visconta\Projects\STdC\lps22df_STdC\driver</state>
+                    <state>C:\Users\visconta\Projects\STdC\lps22hh_STdC\driver</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1161,6 +1163,30 @@
                 <name>$PROJ_DIR$\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_uart.c</name>
             </file>
         </group>
+    </group>
+    <group>
+        <name>lps22df</name>
+        <file>
+            <name>$PROJ_DIR$\..\..\lps22df_STdC\examples\lps22df_read_data_drdy.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\lps22df_STdC\examples\lps22df_read_fifo_irq.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\lps22df_STdC\driver\lps22df_reg.c</name>
+        </file>
+    </group>
+    <group>
+        <name>lps22hh</name>
+        <file>
+            <name>$PROJ_DIR$\..\..\lps22hh_STdC\examples\lps22hh_read_data_drdy.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\lps22hh_STdC\examples\lps22hh_read_fifo_irq.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\lps22hh_STdC\driver\lps22hh_reg.c</name>
+        </file>
     </group>
     <group>
         <name>lsm6dsv</name>
